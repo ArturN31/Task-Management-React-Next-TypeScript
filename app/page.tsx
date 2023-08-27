@@ -21,6 +21,7 @@ export default function Home() {
     isCompleted: boolean;
     due: Date | undefined;
     tags: string[];
+    isOverdue: boolean;
   }
 
   const Add = (
@@ -35,7 +36,8 @@ export default function Home() {
           content: input.charAt(0).toUpperCase() + input.slice(1),
           isCompleted: false,
           due: due ? due : undefined,
-          tags: tags
+          tags: tags,
+          isOverdue: false
         }
         
         if (list.length >= 1) { //list contains objects - add as last
@@ -68,7 +70,8 @@ export default function Home() {
                 content={tasks[item].content} 
                 isCompleted={tasks[item].isCompleted} 
                 due={tasks[item].due} 
-                tags={tasks[item].tags}/>
+                tags={tasks[item].tags}
+                isOverdue={tasks[item].isOverdue}/>
               ))
             : Object.keys(tasks).length === 1 
               ? <Task
@@ -78,7 +81,8 @@ export default function Home() {
                 content={tasks[0].content} 
                 isCompleted={tasks[0].isCompleted} 
                 due={tasks[0].due} 
-                tags={tasks[0].tags}/>
+                tags={tasks[0].tags}
+                isOverdue={tasks[0].isOverdue}/>
               : ''
         }
       </Box>
