@@ -85,7 +85,6 @@ export default function Task(props: any) {
       } return task;
     })
     props.setList(arr);
-    console.log(arr)
   }
 
   useEffect(() => {
