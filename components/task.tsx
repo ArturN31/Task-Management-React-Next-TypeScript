@@ -25,14 +25,30 @@ export default function Task(props: any) {
       isOverdue: boolean;
   }
 
+  //deleting task
+  const deleteTaskAPI = async (id: string) => {
+    await fetch('api/tasks', {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(id)
+    })
+  }
+
   //handles removal of a task
   const Remove = (
+    id: string,
     content: string, 
     due: Date | undefined, 
     tags: string[]
     ) => {
+      deleteTaskAPI(id); //deletes task from db
+      
+      //returns all tasks beside the one that matches the passed task data
+      //effectively removing it from list state
       let arr = props.list.filter((task: TaskProps) => {
-        //returns all tasks beside the one that matches the passed task data effectively removing it from task list
         if (task.content !== content 
         && task.due !== due 
         && task.tags !== tags) return task;
@@ -41,8 +57,23 @@ export default function Task(props: any) {
       props.setList(arr);
   }
 
+  //handles update of tasks edit/completed/overdue
+  const updateTaskAPI = async (id: string, functionality: string, state?: boolean) => {
+    let req = {'id': id, 'functionality': functionality, 'state': state};
+    
+    await fetch('api/tasks', {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(req)
+    })
+  }
+
   //allows to mark task as completed/not completed
   const MarkAsCompleted = (
+    id: string,
     content: string, 
     due: Date | undefined, 
     tags: string[]
@@ -55,6 +86,7 @@ export default function Task(props: any) {
           && task.due === due 
           && task.tags === tags) {
             task.isCompleted = true;
+            updateTaskAPI(id, 'completed', true); //updates task as completed 
             return task;
           } else return task; //if not then return task
         } 
@@ -65,6 +97,7 @@ export default function Task(props: any) {
           && task.due === due 
           && task.tags === tags) {
             task.isCompleted = false;
+            updateTaskAPI(id, 'completed', false); //updates task as not completed 
             return task;
           } else return task; //if not then return task
         }
@@ -72,28 +105,13 @@ export default function Task(props: any) {
       props.setList(arr);
   }
 
-  //marks tasks as overdue when due date is in the past
-  const MarkAsOverdue = (list: TaskProps[]) => {
-    let arr = list.map((task: TaskProps) => {
-      //if task is not overdue and the task is not marked as completed
-      if (task.isOverdue !== true && task.isCompleted !== true) {
-        //if tasks due date is in the past set task as overdue
-        if (task.due && task.due < new Date()) {
-          task.isOverdue = true;
-          return task;
-        } else return task;
-      } return task;
-    })
-    props.setList(arr);
-  }
-
-  useEffect(() => {
-    const interval = setInterval(() => {MarkAsOverdue(props.list)}, 10000);
-    return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const TaskContent = ({content, due, tags}: TaskProps) => {
+    let dateArray: any = [];
+    if (due) { 
+      dateArray = due?.toString().split('T')
+      dateArray[1] = dateArray[1].split('.')[0];
+    }
+
     return (
       <List className="grid grid-flow-col-dense">
         <ListItem className="grid content-start">
@@ -109,8 +127,8 @@ export default function Task(props: any) {
               primary='Due' 
               secondary={
                 <>
-                  <p>{due?.toDateString()}</p>
-                  <p>{due?.toLocaleTimeString()}</p>
+                  <p>{dateArray[0]}</p>
+                  <p>{dateArray[1]}</p>
                 </>
               } />
             </ListItem>
@@ -139,7 +157,7 @@ export default function Task(props: any) {
         {props.isCompleted === true 
           //if completed display undo button
           ? <Button 
-          onClick={() => {MarkAsCompleted(props.content, props.due, props.tags)}} 
+          onClick={() => {MarkAsCompleted(props.id, props.content, props.due, props.tags)}} 
           className="text-black" 
           sx={{
             borderTop: '1px solid #00000044', 
@@ -149,7 +167,7 @@ export default function Task(props: any) {
           : props.isOverdue !== true 
             //if not completed and task is not overdue display completed button
             ? <Button 
-              onClick={() => {MarkAsCompleted(props.content, props.due, props.tags)}} 
+              onClick={() => {MarkAsCompleted(props.id, props.content, props.due, props.tags)}} 
               className="text-black" 
               sx={{
                 borderTop: '1px solid #00000044', 
@@ -167,7 +185,7 @@ export default function Task(props: any) {
               }}>Overdue</Button>
         }
         <Button 
-        onClick={() => {Remove(props.content, props.due, props.tags)}}
+        onClick={() => {Remove(props.id, props.content, props.due, props.tags)}}
         className="text-black" 
         sx={{
           borderTop: '1px solid #00000044', 
