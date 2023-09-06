@@ -2,18 +2,16 @@
 import { Box, Button, List, ListItem, ListItemText} from '@mui/material';
 
 export default function Task(props: any) {
-  let borderColorCustom = {borderColor: '#00000044'};
-
   let completedStyle = {};
   props.isCompleted === true 
     ? completedStyle = {
-      background: 'linear-gradient(to top, white, white 15%, rgb(4 120 87))'} 
+      background: 'linear-gradient(to top, white, white 15%, rgb(4 190 137))'} 
     : completedStyle = {}
 
   let overdueStyle = {};
   props.isOverdue === true
     ? overdueStyle = {
-      background: 'linear-gradient(to top, white, white 15%, rgb(205 25 0))'}
+      background: 'linear-gradient(to top, white, white 15%, rgb(255 85 80))'}
     : overdueStyle = {}
 
   type TaskProps = {
@@ -97,16 +95,29 @@ export default function Task(props: any) {
       dateArray[1] = dateArray[1].split('.')[0];
     }
 
+    let listGrid;
+    if (content 
+    && due 
+    && tags) {listGrid = {gridTemplateColumns: 'repeat(3, minmax(0, 1fr))'}}
+
+    if (content && due 
+    || content && tags 
+    || due && tags) {listGrid = {gridTemplateColumns: 'repeat(2, minmax(0, 1fr))'}}
+
+    if (content 
+    || due 
+    || tags) {listGrid = {gridTemplateColumns: 'repeat(1, minmax(0, 1fr))'}}
+
     return (
-      <List className="grid grid-flow-col-dense">
-        <ListItem className="grid content-start">
+      <List className="grid grid-cols-1 sm:grid-cols-3 text-center">
+        <ListItem className='flex items-start'>
           <ListItemText
           className="text-center break-words"
           primary='Task'
           secondary={content} />
         </ListItem>
         {due
-          ? <ListItem className="grid content-start">
+          ? <ListItem className='flex items-start'>
               <ListItemText
               className="text-center"
               primary='Due' 
@@ -120,7 +131,7 @@ export default function Task(props: any) {
           : ''
         }
         {tags.length >= 1
-          ? <ListItem className="grid content-start">
+          ? <ListItem className='flex items-start'>
               <ListItemText 
               className="text-center"
               primary='Tags' 
@@ -138,7 +149,7 @@ export default function Task(props: any) {
 
   const TaskBtns = () => {
     return (
-      <Box className="grid grid-flow-col-dense">
+      <Box className="grid grid-cols-1 sm:grid-cols-2">
         {props.isCompleted === true 
           //if completed display undo button
           ? <Button 
@@ -191,18 +202,6 @@ export default function Task(props: any) {
       borderRight: '1px solid #00000044',
       borderTop: '1ps solid #00000044'
     }}>
-      {props.isCompleted === true
-        ? <p 
-          className="text-center p-2 border-b shadow-sm font-medium" 
-          style={borderColorCustom}>Task completed</p>
-        : ''}
-      
-      {props.isOverdue === true
-        ? <p 
-          className="text-center p-2 border-b shadow-sm font-medium" 
-          style={borderColorCustom}>Task Overdue</p>
-        : ''}
-
       <TaskContent
       key={props.id}
       content={props.content} 
