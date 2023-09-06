@@ -11,7 +11,7 @@ import ListOfInProgressTasks from "@/components/tasks/inProgressTasks";
 // - Implement task editing.
 // - Implement a search by name & tag function to find tasks quickly.
 // - Implement reminders for due dates.
-// - Implement kanban style boards for overdue, completed, and in progress tasks.
+// - Remove overdue tasks after a period of time ~ 1 day.
 
 export default function Home() {
   const [list, setList] = useState<any>();
@@ -184,8 +184,8 @@ export default function Home() {
           </Box>
         </Box>
       </Box>
-      <Box>
-        <ListOfOverdueTasks 
+      <Box className="grid grid-flow-row-dense grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+        <ListOfInProgressTasks 
         tasks={...list} 
         list={list} 
         setList={setList} 
@@ -197,7 +197,7 @@ export default function Home() {
         setList={setList} 
         updateTaskAPI={updateTaskAPI}/>
 
-        <ListOfInProgressTasks 
+        <ListOfOverdueTasks 
         tasks={...list} 
         list={list} 
         setList={setList} 

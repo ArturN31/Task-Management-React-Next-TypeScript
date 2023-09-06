@@ -9,6 +9,7 @@ type TaskProps = {
 }
 
 import ListOfTasks from "./listOfTasks";
+import { Box } from "@mui/material";
 
 export default function ListOfCompletedTasks(
     {tasks, list, setList, updateTaskAPI}: 
@@ -18,14 +19,23 @@ export default function ListOfCompletedTasks(
     updateTaskAPI: any}) {
         
     let arr: any;
-    if (Object.keys(tasks).length > 1) {
-    arr = Object.keys(tasks).map((item: any) => {
-        if (tasks[item].isCompleted === true) return tasks[item]})
-    } else arr = tasks;
-    
-    if (arr.length > 0) {arr = arr.filter((el:any) => {return el})}
+    if (tasks !== undefined) {
+        if (Object.keys(tasks).length > 1) {
+        arr = Object.keys(tasks).map((item: any) => {
+            if (tasks[item].isCompleted === true) return tasks[item]})
+        } else arr = tasks;
+        
+        if (arr.length > 0) {arr = arr.filter((el:any) => {return el})}
+    }
     
     return (
-        <ListOfTasks tasks={...arr}  list={list} setList={setList} updateTaskAPI={updateTaskAPI}/>
+        <Box className="border rounded m-4 mb-0 p-2 pb-4 h-fit shadow-sm">
+            <h2 className="text-xl text-center mt-4">Completed</h2>
+            <ListOfTasks 
+            tasks={...arr}  
+            list={list} 
+            setList={setList} 
+            updateTaskAPI={updateTaskAPI}/>
+        </Box>
     )
 }
