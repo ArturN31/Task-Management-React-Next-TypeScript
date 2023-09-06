@@ -1,6 +1,5 @@
 'use client'
 import { Box, Button, List, ListItem, ListItemText} from '@mui/material';
-import { useEffect } from 'react';
 
 export default function Task(props: any) {
   let borderColorCustom = {borderColor: '#00000044'};
@@ -57,20 +56,6 @@ export default function Task(props: any) {
       props.setList(arr);
   }
 
-  //handles update of tasks edit/completed/overdue
-  const updateTaskAPI = async (id: string, functionality: string, state?: boolean) => {
-    let req = {'id': id, 'functionality': functionality, 'state': state};
-    
-    await fetch('api/tasks', {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(req)
-    })
-  }
-
   //allows to mark task as completed/not completed
   const MarkAsCompleted = (
     id: string,
@@ -86,7 +71,7 @@ export default function Task(props: any) {
           && task.due === due 
           && task.tags === tags) {
             task.isCompleted = true;
-            updateTaskAPI(id, 'completed', true); //updates task as completed 
+            props.updateTaskAPI(id, 'completed', true); //updates task as completed 
             return task;
           } else return task; //if not then return task
         } 
@@ -97,7 +82,7 @@ export default function Task(props: any) {
           && task.due === due 
           && task.tags === tags) {
             task.isCompleted = false;
-            updateTaskAPI(id, 'completed', false); //updates task as not completed 
+            props.updateTaskAPI(id, 'completed', false); //updates task as not completed 
             return task;
           } else return task; //if not then return task
         }
@@ -127,8 +112,8 @@ export default function Task(props: any) {
               primary='Due' 
               secondary={
                 <>
-                  <p>{dateArray[0]}</p>
-                  <p>{dateArray[1]}</p>
+                  <span>{dateArray[0]}</span><br></br>
+                  <span>{dateArray[1]}</span>
                 </>
               } />
             </ListItem>
@@ -141,7 +126,7 @@ export default function Task(props: any) {
               primary='Tags' 
               secondary={tags.map((tag: string) => {
                 return (
-                  <p key={tag}>{tag}</p>
+                  <span key={tag}><span>{tag}</span><br></br></span>
                 )})
               }/>
             </ListItem>
@@ -218,7 +203,8 @@ export default function Task(props: any) {
           style={borderColorCustom}>Task Overdue</p>
         : ''}
 
-      <TaskContent 
+      <TaskContent
+      key={props.id}
       content={props.content} 
       due={props.due} 
       tags={props.tags}

@@ -35,14 +35,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         state: boolean
       }
       const { id, functionality, state }:putProps = req.body;
-      console.log(req.body)
 
       switch (functionality) {
         case 'completed':
           res.json(await Todo.findByIdAndUpdate(id, {isCompleted: state}))
           break;
         case 'overdue':
-          console.log('overdue')
           res.json(await Todo.findByIdAndUpdate(id, {isOverdue: state}))
           break;
         case 'edit':

@@ -1,10 +1,12 @@
 'use client'
 import { useEffect, useState } from "react"
-import { Box, TextField, Button} from '@mui/material';
+import { Box, TextField, Button, TabClassKey} from '@mui/material';
 
 import Tags from '@/components/form/tags';
 import Datepicker from "@/components/form/datepicker";
-import Task from "@/components/task";
+import ListOfOverdueTasks from "@/components/tasks/overdueTasks";
+import ListOfCompletedTasks from "@/components/tasks/completedTasks";
+import ListOfInProgressTasks from "@/components/tasks/inProgressTasks";
 
 // - Implement task editing.
 // - Implement a search by name & tag function to find tasks quickly.
@@ -27,14 +29,14 @@ export default function Home() {
     isOverdue: boolean;
   }
 
-  //getting tasks form an api
+  //getting tasks from an api
   const getApiData = async () => {
     let data = await fetch('api/tasks')
       .then((response) => response.json())
       .then((todos) => {return todos})
     setList(data);
   }
-
+  
   //get data from mongodb on page load
   useEffect(() => {
     getApiData();
@@ -42,24 +44,18 @@ export default function Home() {
 
   //posting task to api
   const addTaskAPI = async (task: TaskProps) => {
-    let date = task.due;
-
     //getting utc date to keep timezone when stringifying date
+    let date = task.due;
     let utcDate = date  
-    ? new Date(
-      Date.UTC(
-        date.getFullYear(), 
-        date.getMonth(), 
-        date.getDate(), 
-        date.getHours(), 
-        date.getMinutes()
-      ))
+    ? new Date(Date.UTC(
+      date.getFullYear(), 
+      date.getMonth(), 
+      date.getDate(), 
+      date.getHours(), 
+      date.getMinutes()))
     : undefined;
 
-    let req = {
-      ...task,
-      due: utcDate
-    }
+    let req = {...task, due: utcDate}
 
     await fetch('api/tasks', {
       method: 'POST',
@@ -92,7 +88,6 @@ export default function Home() {
   //handles update of tasks edit/completed/overdue
   const updateTaskAPI = async (id: string, functionality: string, state?: boolean) => {
     let req = {'id': id, 'functionality': functionality, 'state': state};
-    
     await fetch('api/tasks', {
       method: 'PUT',
       headers: {
@@ -102,12 +97,6 @@ export default function Home() {
       body: JSON.stringify(req)
     })
   }
-
-  useEffect(() => {
-    const interval = setInterval(() => {MarkAsOverdue(list)}, 10000);
-    return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [list])
 
   //marks tasks as overdue when due date is in the past
   const MarkAsOverdue = (tasks: TaskProps[]) => {
@@ -126,7 +115,6 @@ export default function Home() {
                           newDate.getHours(), 
                           newDate.getMinutes()
                   ))));
-
         //if tasks due date is in the past set task as overdue
         if (task.due < now) {
           task.isOverdue = true;
@@ -135,43 +123,17 @@ export default function Home() {
         } else return task;
       } return task;
     })
-    setList(arr);
+    //filters out updated tasks
+    const results = tasks.filter(({ isOverdue: id1 }) => !arr.some(({ isOverdue: id2 }) => id2 === id1));
+    //if there are any changes update the state
+    if (results.length !== 0) setList(arr);
   }
 
-  //renders a grid of tasks
-  const ListOfTasks = (tasks: Array<any>) => {
-    return (
-      <Box className="grid grid-flow-row-dense grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
-        {
-          Object.keys(tasks).length > 1
-            ? Object.keys(tasks).map((item: any) => (
-                <Task 
-                key={tasks[item]._id} 
-                list={list}
-                setList={setList}
-                id={tasks[item]._id}
-                content={tasks[item].content} 
-                isCompleted={tasks[item].isCompleted} 
-                due={tasks[item].due} 
-                tags={tasks[item].tags}
-                isOverdue={tasks[item].isOverdue}/>
-              ))
-            : Object.keys(tasks).length === 1 
-              ? <Task
-                key={tasks[0]._id} 
-                list={list}
-                setList={setList}
-                id={tasks[0]._id}
-                content={tasks[0].content} 
-                isCompleted={tasks[0].isCompleted} 
-                due={tasks[0].due} 
-                tags={tasks[0].tags}
-                isOverdue={tasks[0].isOverdue}/>
-              : ''
-        }
-      </Box>
-    )
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {MarkAsOverdue(list)}, 10000);
+    return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [list])
 
   //handles the input of task 
   const handleTaskInput = (event: any) => {
@@ -223,7 +185,23 @@ export default function Home() {
         </Box>
       </Box>
       <Box>
-        <ListOfTasks {...list}/>
+        <ListOfOverdueTasks 
+        tasks={...list} 
+        list={list} 
+        setList={setList} 
+        updateTaskAPI={updateTaskAPI}/>
+
+        <ListOfCompletedTasks 
+        tasks={...list} 
+        list={list} 
+        setList={setList} 
+        updateTaskAPI={updateTaskAPI}/>
+
+        <ListOfInProgressTasks 
+        tasks={...list} 
+        list={list} 
+        setList={setList} 
+        updateTaskAPI={updateTaskAPI}/>
       </Box>
     </main>
   )
