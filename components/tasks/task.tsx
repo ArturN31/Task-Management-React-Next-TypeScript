@@ -95,19 +95,6 @@ export default function Task(props: any) {
       dateArray[1] = dateArray[1].split('.')[0];
     }
 
-    let listGrid;
-    if (content 
-    && due 
-    && tags) {listGrid = {gridTemplateColumns: 'repeat(3, minmax(0, 1fr))'}}
-
-    if (content && due 
-    || content && tags 
-    || due && tags) {listGrid = {gridTemplateColumns: 'repeat(2, minmax(0, 1fr))'}}
-
-    if (content 
-    || due 
-    || tags) {listGrid = {gridTemplateColumns: 'repeat(1, minmax(0, 1fr))'}}
-
     return (
       <List className="grid grid-cols-1 sm:grid-cols-3 text-center">
         <ListItem className='flex items-start'>
