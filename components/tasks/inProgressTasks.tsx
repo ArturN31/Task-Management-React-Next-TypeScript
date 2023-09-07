@@ -13,18 +13,21 @@ import { Box } from "@mui/material";
 
 export default function ListOfInProgressTasks(
     {tasks, list, setList, updateTaskAPI}: 
-    {tasks: Array<TaskProps & {_id: string}>, 
-    list: TaskProps, 
-    setList: any, 
-    updateTaskAPI: any}) {
+    {
+        tasks: Array<TaskProps & {_id: string}>, 
+        list: Array<TaskProps & {_id: string}>, 
+        setList: any, 
+        updateTaskAPI: any}) {
 
     let arr: any;
     if (tasks !== undefined) {
+        //returns tasks that are not marked as overdue and completed
         if (Object.keys(tasks).length > 1) {
         arr = Object.keys(tasks).map((item: any) => {
             if (tasks[item].isOverdue === false && tasks[item].isCompleted === false) return tasks[item]})
         } else arr = tasks;
         
+        //filters undefined elements from array
         if (arr.length > 0) {arr = arr.filter((el:any) => {return el})}
     }
         

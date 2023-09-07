@@ -14,7 +14,15 @@ import ListOfInProgressTasks from "@/components/tasks/inProgressTasks";
 // - Remove overdue tasks after a period of time ~ 1 day.
 
 export default function Home() {
-  const [list, setList] = useState<any>();
+  const [list, setList] = useState<Array<TaskProps & {_id: string}>>(
+    [{
+      _id: '',
+      content: '',
+      due: undefined,
+      tags: [],
+      isCompleted: false,
+      isOverdue: false
+    }]);
   const [taskInput, setTaskInput] = useState<string>('');
   const [tagsInput, setTagsInput] = useState<string[]>([]);
   const [dueDate, setDueDate] = useState<Date>();
@@ -99,8 +107,8 @@ export default function Home() {
   }
 
   //marks tasks as overdue when due date is in the past
-  const MarkAsOverdue = (tasks: TaskProps[]) => {
-    let arr = tasks.map((task: any) => {
+  const MarkAsOverdue = (tasks: Array<TaskProps & {_id: string}>) => {
+    let arr = tasks.map((task: TaskProps & {_id: string}) => {
       //if task is not overdue and the task is not marked as completed
       if (task.isOverdue !== true && task.isCompleted !== true) {
         //getting utc date to keep timezone when stringifying date
@@ -116,11 +124,13 @@ export default function Home() {
                           newDate.getMinutes()
                   ))));
         //if tasks due date is in the past set task as overdue
-        if (task.due < now) {
-          task.isOverdue = true;
-          updateTaskAPI(task._id, 'overdue', true); //updates task as overdue
-          return task;
-        } else return task;
+        if (task.due) {
+          if (task.due < now) {
+            task.isOverdue = true;
+            updateTaskAPI(task._id, 'overdue', true); //updates task as overdue
+            return task;
+          } else return task;
+        }
       } return task;
     })
     //filters out updated tasks
@@ -136,9 +146,14 @@ export default function Home() {
   }, [list])
 
   //handles the input of task 
-  const handleTaskInput = (event: any) => {
-    let value = event.target.value;
-    setTaskInput(value);
+  const handleTaskInput = (event: Event) => {
+    let value: string = '';
+    let e = event?.target as HTMLInputElement
+    if (e) {
+      value = e.value;
+    }
+    
+    return setTaskInput(value);
   }
 
   return (
@@ -161,7 +176,7 @@ export default function Home() {
         variant="outlined" 
         className="shadow-inner bg-white"
         value={taskInput}
-        onChange={handleTaskInput}/>
+        onChange={(e: any) => {handleTaskInput(e)}}/>
         <Box className="grid grid-cols-1 xl:grid-cols-3">
           <Tags 
           tagsInput={tagsInput} 

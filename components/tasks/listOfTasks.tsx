@@ -3,9 +3,21 @@
 import { Box } from '@mui/material';
 import Task from "@/components/tasks/task";
 
+type TaskProps = {
+    content: string;
+    isCompleted: boolean;
+    due: Date | undefined;
+    tags: string[];
+    isOverdue: boolean;
+}
+
 export default function ListOfTasks(
     {tasks, list, setList, updateTaskAPI}: 
-    {tasks: any, list: any, setList: any, updateTaskAPI: any}) {
+    {
+        tasks: Array<TaskProps & {_id: string}>, 
+        list: Array<TaskProps & {_id: string}>, 
+        setList: Function, 
+        updateTaskAPI: Function}) {
 
     let grid;
     if (tasks && Object.keys(tasks).length !== 1) {
@@ -22,7 +34,7 @@ export default function ListOfTasks(
             style={grid}>
                 {
                 Object.keys(tasks).length > 1
-                    ? Object.keys(tasks).map((item: any) => (
+                    ? Object.keys(tasks).map((item: any ) => (
                         <Task 
                         key={tasks[item]._id}
                         list={list}

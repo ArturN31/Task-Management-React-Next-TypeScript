@@ -4,9 +4,14 @@ import { Box } from '@mui/material';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function Datepicker(props: any) {
+export default function Datepicker(
+    {dueDate, setDueDate}: 
+    {
+        dueDate: Date | undefined, 
+        setDueDate: Function}) {
+
     //handles date choice
-    const handleDueDate = (date: Date) => props.setDueDate(date);
+    const handleDueDate = (date: Date) => setDueDate(date);
 
     let borderColorCustom = {borderColor: '#00000044'};
 
@@ -19,7 +24,7 @@ export default function Datepicker(props: any) {
                 <Box className="grid justify-center items-center">
                     <DatePicker
                     id='datepicker'
-                    selected={props.dueDate}
+                    selected={dueDate}
                     placeholderText="Choose date"
                     onChange={(date: Date) => handleDueDate(date)}
                     withPortal

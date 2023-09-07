@@ -6,22 +6,25 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
 
-export default function Tags(props:any) {
+export default function Tags(
+    {tagsInput, setTagsInput}: 
+    {
+        tagsInput: string[], 
+        setTagsInput: Function}) {
+
     let borderColorCustom = {border:'1px solid #00000044'};
 
     //handles addition of a tag to array
     const addTag = (tag: string) => {
-        let arr = [...props.tagsInput];
+        let arr = [...tagsInput];
         arr.push(tag);
-        props.setTagsInput(arr);
+        setTagsInput(arr);
     }
 
     //handles removal of a tag from array
     const removeTag = (tag: string) => {
-        let arr = props.tagsInput.filter((storedTag:string) => {
-        return storedTag !== tag
-        })
-        props.setTagsInput(arr);
+        let arr = tagsInput.filter((storedTag:string) => {return storedTag !== tag})
+        setTagsInput(arr);
     }
 
     return (
@@ -35,7 +38,7 @@ export default function Tags(props:any) {
                     title="Important" 
                     className="w-fit shadow-md m-1 self-center" 
                     sx={borderColorCustom}>
-                        {props.tagsInput.indexOf('Important') > -1
+                        {tagsInput.indexOf('Important') > -1
                             ? <IconButton
                                 className=''
                                 color="primary"
@@ -53,7 +56,7 @@ export default function Tags(props:any) {
                     title="Birthday" 
                     className="w-fit shadow-md m-1 self-center" 
                     sx={borderColorCustom}>
-                        {props.tagsInput.indexOf('Birthday') > -1
+                        {tagsInput.indexOf('Birthday') > -1
                             ? <IconButton
                             color="primary"
                             onClick={() => removeTag('Birthday')}>
@@ -70,7 +73,7 @@ export default function Tags(props:any) {
                     title="Shopping" 
                     className="w-fit shadow-md m-1 self-center" 
                     sx={borderColorCustom}>
-                        {props.tagsInput.indexOf('Shopping') > -1
+                        {tagsInput.indexOf('Shopping') > -1
                             ? <IconButton
                             color="primary"
                             onClick={() => removeTag('Shopping')}>
@@ -87,7 +90,7 @@ export default function Tags(props:any) {
                     title="Work" 
                     className="w-fit shadow-md m-1 self-center" 
                     sx={borderColorCustom}>
-                        {props.tagsInput.indexOf('Work') > -1
+                        {tagsInput.indexOf('Work') > -1
                             ? <IconButton
                             color="primary"
                             onClick={() => removeTag('Work')}>
@@ -104,7 +107,7 @@ export default function Tags(props:any) {
                     title="Meeting" 
                     className="w-fit shadow-md m-1 self-center" 
                     sx={borderColorCustom}>
-                        {props.tagsInput.indexOf('Meeting') > -1
+                        {tagsInput.indexOf('Meeting') > -1
                             ? <IconButton
                             color="primary"
                             onClick={() => removeTag('Meeting')}>
