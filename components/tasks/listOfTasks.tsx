@@ -19,19 +19,10 @@ export default function ListOfTasks(
         setList: Function, 
         updateTaskAPI: Function}) {
 
-    let grid;
-    if (tasks && Object.keys(tasks).length !== 1) {
-        grid = {gridTemplateColumns: 'repeat(2, minmax(0, 1fr))'}
-    }   else {
-        grid = {gridTemplateColumns: 'repeat(1, minmax(0, 1fr))'}
-    }
-
     //renders a grid of tasks
     return (
         tasks !== undefined
-        ?   <Box 
-            className="grid grid-flow-row-dense grid-cols-1 2xl:grid-cols-2"
-            style={grid}>
+        ?   <Box>
                 {
                 Object.keys(tasks).length > 1
                     ? Object.keys(tasks).map((item: any ) => (

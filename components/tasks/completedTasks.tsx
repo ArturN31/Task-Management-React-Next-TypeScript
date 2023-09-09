@@ -26,10 +26,10 @@ export default function ListOfCompletedTasks(
         if (Object.keys(tasks).length > 1) {
         arr = Object.keys(tasks).map((item: any) => {
             if (tasks[item].isCompleted === true) return tasks[item]})
-        } else arr = tasks;
+        } else {if (tasks[0] && tasks[0].isCompleted === true) arr = tasks}
         
         //filters undefined elements from array
-        if (arr.length > 0) {arr = arr.filter((el:any) => {return el})}
+        if (arr && arr.length > 0) {arr = arr.filter((el:any) => {return el})}
     }
     
     return (

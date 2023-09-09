@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from "react"
-import { Box, TextField, Button, TabClassKey} from '@mui/material';
+import { Box, TextField, IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 import Tags from '@/components/form/tags';
 import Datepicker from "@/components/form/datepicker";
@@ -187,15 +188,15 @@ export default function Home() {
           setDueDate={setDueDate}/>
 
           <Box className="w-full h-full flex justify-end">
-            <Button
+            <IconButton
             type="submit"
-            className="mt-3 shadow-md p-2 w-fit text-black bg-white" 
+            className="shadow-md p-2 w-fit h-fit text-black bg-white self-center mt-3" 
             sx={{
               border: '1px solid', 
               borderColor: '#00000044'
             }}>
-              Add task
-            </Button>
+              <AddIcon/>
+            </IconButton>
           </Box>
         </Box>
       </Box>
