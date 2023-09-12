@@ -1,7 +1,7 @@
 'use client'
 
 import { Box } from '@mui/material';
-import Task from "@/components/tasks/task";
+import Task from "@/components/tasks/task/task";
 
 type TaskProps = {
     content: string;
@@ -11,7 +11,7 @@ type TaskProps = {
     isOverdue: boolean;
 }
 
-export default function ListOfTasks(
+export default function ListOutput(
     {tasks, list, setList, updateTaskAPI}: 
     {
         tasks: Array<TaskProps & {_id: string}>, 

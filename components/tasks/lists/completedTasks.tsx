@@ -8,7 +8,7 @@ type TaskProps = {
     isOverdue: boolean;
 }
 
-import ListOfTasks from "./listOfTasks";
+import ListOutput from "./listOutput";
 import { Box } from "@mui/material";
 
 export default function ListOfCompletedTasks(
@@ -35,7 +35,7 @@ export default function ListOfCompletedTasks(
     return (
         <Box className="border rounded m-4 mb-0 p-2 pb-4 h-fit shadow-sm">
             <h2 className="text-xl text-center mt-4">Completed</h2>
-            <ListOfTasks 
+            <ListOutput 
             tasks={...arr}  
             list={list} 
             setList={setList} 

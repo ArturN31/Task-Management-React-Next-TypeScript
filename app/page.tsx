@@ -5,14 +5,15 @@ import AddIcon from '@mui/icons-material/Add';
 
 import Tags from '@/components/form/tags';
 import Datepicker from "@/components/form/datepicker";
-import ListOfOverdueTasks from "@/components/tasks/overdueTasks";
-import ListOfCompletedTasks from "@/components/tasks/completedTasks";
-import ListOfInProgressTasks from "@/components/tasks/inProgressTasks";
+import ListOfOverdueTasks from "@/components/tasks/lists/overdueTasks";
+import ListOfCompletedTasks from "@/components/tasks/lists/completedTasks";
+import ListOfInProgressTasks from "@/components/tasks/lists/inProgressTasks";
+import Search from "@/components/search/search";
 
 // - Implement task editing.
-// - Implement a search by name & tag function to find tasks quickly.
+// - Implement a search by in progress/completed/overdue.
 // - Implement reminders for due dates.
-// - Remove overdue tasks after a period of time ~ 1 day.
+// - Remove/Archive overdue tasks after a period of time ~ 1 day.
 
 export default function Home() {
   const [list, setList] = useState<Array<TaskProps & {_id: string}>>(
@@ -27,6 +28,8 @@ export default function Home() {
   const [taskInput, setTaskInput] = useState<string>('');
   const [tagsInput, setTagsInput] = useState<string[]>([]);
   const [dueDate, setDueDate] = useState<Date>();
+  const [searchInput, setSearchInput] = useState<string>('');
+  const [tagsSearch, setTagsSearch] = useState<string[]>([]);
 
   let borderColorCustom = {borderColor: '#00000044'};
 
@@ -150,10 +153,7 @@ export default function Home() {
   const handleTaskInput = (event: Event) => {
     let value: string = '';
     let e = event?.target as HTMLInputElement
-    if (e) {
-      value = e.value;
-    }
-    
+    if (e) value = e.value;
     return setTaskInput(value);
   }
 
@@ -164,33 +164,35 @@ export default function Home() {
       style={borderColorCustom}>
         HEADER
       </h1>
-      <Box
-      component="form"
-      onSubmit={(e) => Add(taskInput, tagsInput, dueDate)}
-      noValidate
-      autoComplete="off"
-      className="p-4 border w-full sm:w-full md:w-4/5 xl:w-4/5 grid bg-slate-50 rounded-bl-md rounded-br-md shadow-md" 
-      style={borderColorCustom}>
-        <TextField 
-        id="task-input" 
-        label="Task" 
-        variant="outlined" 
-        className="shadow-inner bg-white"
-        value={taskInput}
-        onChange={(e: any) => {handleTaskInput(e)}}/>
-        <Box className="grid grid-cols-1 xl:grid-cols-3">
-          <Tags 
-          tagsInput={tagsInput} 
-          setTagsInput={setTagsInput}/>
 
-          <Datepicker 
-          dueDate={dueDate} 
-          setDueDate={setDueDate}/>
+      <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Box
+        component="form"
+        onSubmit={(e) => Add(taskInput, tagsInput, dueDate)}
+        noValidate
+        autoComplete="off"
+        className="p-4 border w-full grid bg-slate-50 rounded-bl-md rounded-br-md shadow-md" 
+        style={borderColorCustom}>
+          <TextField 
+          id="task-input" 
+          label="Task" 
+          variant="outlined" 
+          className="shadow-inner bg-white"
+          value={taskInput}
+          onChange={(e: any) => {handleTaskInput(e)}}/>
+          <Box className="grid grid-cols-1 2xl:grid-cols-2">
+            <Tags 
+            tagsInput={tagsInput} 
+            setTagsInput={setTagsInput}/>
 
-          <Box className="w-full h-full flex justify-end">
+            <Datepicker 
+            dueDate={dueDate} 
+            setDueDate={setDueDate}/>
+          </Box>
+          <Box className="grid justify-end">
             <IconButton
             type="submit"
-            className="shadow-md p-2 w-fit h-fit text-black bg-white self-center mt-3" 
+            className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
             sx={{
               border: '1px solid', 
               borderColor: '#00000044'
@@ -199,8 +201,20 @@ export default function Home() {
             </IconButton>
           </Box>
         </Box>
+
+        <Box 
+        className="p-4 border bg-slate-50 rounded shadow-md h-fit" 
+        style={borderColorCustom}>
+          <Search
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          tagsSearch={tagsSearch}
+          setTagsSearch={setTagsSearch}
+          setList={setList}/>
+        </Box>  
       </Box>
-      <Box className="grid grid-flow-row-dense grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+
+      <Box className="grid grid-flow-row-dense grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 sm:w-max w-full">
         <ListOfInProgressTasks 
         tasks={...list} 
         list={list} 

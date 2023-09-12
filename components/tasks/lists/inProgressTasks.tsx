@@ -8,7 +8,7 @@ type TaskProps = {
     isOverdue: boolean;
 }
 
-import ListOfTasks from "./listOfTasks";
+import ListOutput from "./listOutput";
 import { Box } from "@mui/material";
 
 export default function ListOfInProgressTasks(
@@ -28,13 +28,13 @@ export default function ListOfInProgressTasks(
         } else {if (tasks[0] && tasks[0].isOverdue === false && tasks[0].isCompleted === false) arr = tasks}
         
         //filters undefined elements from array
-        if (arr && arr.length > 0) {arr = arr.filter((el:any) => {return el})}
+        if (arr && arr.length > 0) {arr = arr.filter((el: Element) => {return el})}
     }
         
     return (
         <Box className="border rounded m-4 mb-0 p-2 pb-4 h-fit shadow-sm">
             <h2 className="text-xl text-center mt-4">In progress</h2>
-            <ListOfTasks 
+            <ListOutput 
             tasks={...arr} 
             list={list} 
             setList={setList} 
