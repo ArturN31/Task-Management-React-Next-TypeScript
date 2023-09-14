@@ -119,14 +119,14 @@ export default function TaskBtns(
             : ''
         }
 
-        <Tooltip 
+        {/* <Tooltip 
         className='hover:text-blue-600'
         title="Edit task">
           <IconButton 
           onClick={() => {}}>
             <EditIcon/>
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
 
         <Tooltip 
         className='hover:text-red-600'

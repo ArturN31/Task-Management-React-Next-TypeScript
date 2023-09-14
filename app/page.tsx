@@ -1,7 +1,9 @@
 'use client'
 import { useEffect, useState } from "react"
-import { Box, TextField, IconButton } from '@mui/material';
+import { Box, TextField, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import Tags from '@/components/form/tags';
 import Datepicker from "@/components/form/datepicker";
@@ -11,9 +13,9 @@ import ListOfInProgressTasks from "@/components/tasks/lists/inProgressTasks";
 import Search from "@/components/search/search";
 
 // - Implement task editing.
-// - Implement a search by in progress/completed/overdue.
 // - Implement reminders for due dates.
 // - Remove/Archive overdue tasks after a period of time ~ 1 day.
+// - Task removal confirmation dialog box.
 
 export default function Home() {
   const [list, setList] = useState<Array<TaskProps & {_id: string}>>(
@@ -30,8 +32,20 @@ export default function Home() {
   const [dueDate, setDueDate] = useState<Date>();
   const [searchInput, setSearchInput] = useState<string>('');
   const [tagsSearch, setTagsSearch] = useState<string[]>([]);
+  const [isVisible, setIsVisible] = useState<isVisibleProps>({
+    inProgress: true,
+    completed: true,
+    overdue: true
+  })
+  const [isFormVisible, setIsFormVisible] = useState<Boolean>(true);
 
   let borderColorCustom = {borderColor: '#00000044'};
+
+  type isVisibleProps = {
+    inProgress: boolean;
+    completed: boolean;
+    overdue: boolean;
+  }
 
   type TaskProps = {
     content: string;
@@ -114,7 +128,7 @@ export default function Home() {
   const MarkAsOverdue = (tasks: Array<TaskProps & {_id: string}>) => {
     let arr = tasks.map((task: TaskProps & {_id: string}) => {
       //if task is not overdue and the task is not marked as completed
-      if (task.isOverdue !== true && task.isCompleted !== true) {
+      if (task.due && task.isOverdue !== true && task.isCompleted !== true) {
         //getting utc date to keep timezone when stringifying date
         let newDate = new Date();
         let now = JSON.parse(
@@ -128,19 +142,19 @@ export default function Home() {
                           newDate.getMinutes()
                   ))));
         //if tasks due date is in the past set task as overdue
-        if (task.due) {
-          if (task.due < now) {
-            task.isOverdue = true;
-            updateTaskAPI(task._id, 'overdue', true); //updates task as overdue
-            return task;
-          } else return task;
-        }
+        if (task.due < now) {
+          task.isOverdue = true;
+          updateTaskAPI(task._id, 'overdue', true); //updates task as overdue
+          return task;
+        } else return task;
       } return task;
     })
     //filters out updated tasks
-    const results = tasks.filter(({ isOverdue: id1 }) => !arr.some(({ isOverdue: id2 }) => id2 === id1));
+    //const results = tasks.filter(({ isOverdue: id1 }) => !arr.some(({ isOverdue: id2 }) => id2 === id1));
+    //console.log(results);
     //if there are any changes update the state
-    if (results.length !== 0) setList(arr);
+    //if (results.length !== 0) setList(arr)
+    setList(arr);
   }
 
   useEffect(() => {
@@ -165,73 +179,121 @@ export default function Home() {
         HEADER
       </h1>
 
-      <Box className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Box
-        component="form"
-        onSubmit={(e) => Add(taskInput, tagsInput, dueDate)}
-        noValidate
-        autoComplete="off"
-        className="p-4 border w-full grid bg-slate-50 rounded-bl-md rounded-br-md shadow-md" 
-        style={borderColorCustom}>
-          <TextField 
-          id="task-input" 
-          label="Task" 
-          variant="outlined" 
-          className="shadow-inner bg-white"
-          value={taskInput}
-          onChange={(e: any) => {handleTaskInput(e)}}/>
-          <Box className="grid grid-cols-1 2xl:grid-cols-2">
-            <Tags 
-            tagsInput={tagsInput} 
-            setTagsInput={setTagsInput}/>
-
-            <Datepicker 
-            dueDate={dueDate} 
-            setDueDate={setDueDate}/>
-          </Box>
-          <Box className="grid justify-end">
-            <IconButton
-            type="submit"
-            className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
-            sx={{
-              border: '1px solid', 
-              borderColor: '#00000044'
-            }}>
-              <AddIcon/>
-            </IconButton>
-          </Box>
-        </Box>
-
+      {/* FORM */}
+      <Box className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
         <Box 
-        className="p-4 border bg-slate-50 rounded shadow-md h-fit" 
+        className="p-4 border bg-slate-50 rounded-bl-md rounded-br-md shadow-md h-fit" 
+        style={borderColorCustom}>
+          {isFormVisible === true
+            ? <Box
+              component="form"
+              onSubmit={(e) => Add(taskInput, tagsInput, dueDate)}
+              noValidate
+              autoComplete="off"
+              className="w-full grid">
+                <p className="pb-2">Add</p>
+                <TextField 
+                id="task-input" 
+                label="Task content" 
+                variant="outlined" 
+                className="shadow-inner bg-white"
+                value={taskInput}
+                onChange={(e: any) => {handleTaskInput(e)}}/>
+                <Box className="grid grid-cols-1 2xl:grid-cols-2">
+                  <Tags 
+                  tagsInput={tagsInput} 
+                  setTagsInput={setTagsInput}/>
+      
+                  <Datepicker 
+                  dueDate={dueDate} 
+                  setDueDate={setDueDate}/>
+                </Box>
+                <Box className="grid">
+                  <Box className="flex justify-center gap-4">
+                    <Tooltip 
+                    title='Show filters' 
+                    className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
+                    sx={{
+                        border: '1px solid', 
+                        borderColor: '#00000044'
+                    }}>
+                        <IconButton onClick={() => {setIsFormVisible(false)}}>
+                            <KeyboardArrowUpIcon/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title='Add task'>
+                      <IconButton
+                      type="submit"
+                      className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
+                      sx={{
+                        border: '1px solid', 
+                        borderColor: '#00000044'
+                      }}>
+                        <AddIcon/>
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </Box>
+              </Box>
+            : <Box className="flex justify-center">
+                <Tooltip 
+                title='Show filters' 
+                className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
+                sx={{
+                    border: '1px solid', 
+                    borderColor: '#00000044'
+                }}>
+                    <IconButton 
+                    className="grid grid-cols-1 mx-auto"
+                    onClick={() => {setIsFormVisible(true)}}>
+                        <KeyboardArrowDownIcon/>
+                    </IconButton>
+                </Tooltip>
+              </Box>
+          }
+        </Box>
+        <Box 
+        className="p-4 border bg-slate-50 rounded-bl-md rounded-br-md shadow-md h-fit" 
         style={borderColorCustom}>
           <Search
           searchInput={searchInput}
           setSearchInput={setSearchInput}
           tagsSearch={tagsSearch}
           setTagsSearch={setTagsSearch}
-          setList={setList}/>
-        </Box>  
+          setList={setList}
+          isVisible={isVisible}
+          setIsVisible={setIsVisible}/>
+        </Box>
       </Box>
-
-      <Box className="grid grid-flow-row-dense grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 sm:w-max w-full">
-        <ListOfInProgressTasks 
-        tasks={...list} 
-        list={list} 
-        setList={setList} 
-        updateTaskAPI={updateTaskAPI}/>
-
-        <ListOfCompletedTasks 
-        tasks={...list} 
-        list={list} 
-        setList={setList} 
-        updateTaskAPI={updateTaskAPI}/>
-
-        <ListOfOverdueTasks 
-        tasks={...list} 
-        list={list} 
-        setList={setList} 
-        updateTaskAPI={updateTaskAPI}/>
+        
+      {/* TASKS output */}
+      <Box className="grid grid-flow-row-dense grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 w-full">
+        {isVisible.inProgress === true
+          ? <ListOfInProgressTasks 
+            tasks={...list} 
+            list={list} 
+            setList={setList} 
+            updateTaskAPI={updateTaskAPI}/>
+          : ''
+        }
+        
+        {isVisible.completed === true
+          ? <ListOfCompletedTasks 
+            tasks={...list} 
+            list={list} 
+            setList={setList} 
+            updateTaskAPI={updateTaskAPI}/>
+          : ''
+        }
+        
+        {isVisible.overdue === true
+          ? <ListOfOverdueTasks 
+            tasks={...list} 
+            list={list} 
+            setList={setList} 
+            updateTaskAPI={updateTaskAPI}/>
+          : ''
+        }
       </Box>
     </main>
   )

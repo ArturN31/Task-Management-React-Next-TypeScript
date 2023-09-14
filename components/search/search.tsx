@@ -8,19 +8,32 @@ type TaskProps = {
     isOverdue: boolean;
 }
 
-import { Box, TextField } from "@mui/material";
+type isVisibleProps = {
+    inProgress: boolean;
+    completed: boolean;
+    overdue: boolean;
+}
+
+import { TextField, IconButton, Tooltip, Box } from "@mui/material";
 import TagsSearch from "../search/tagsSearch";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ListFilter from "./listFilter";
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 export default function Search(
-    {searchInput, setSearchInput, tagsSearch, setTagsSearch, setList}: 
+    {searchInput, setSearchInput, tagsSearch, setTagsSearch, setList, isVisible, setIsVisible}: 
     {
         searchInput: string, 
         setSearchInput: Function,
         tagsSearch: string[],
         setTagsSearch: Function,
-        setList: Function
+        setList: Function,
+        isVisible: isVisibleProps,
+        setIsVisible: Function
     }) {
+
+    const [isSearchVisible, setIsSearchVisible] = useState<Boolean>(true);
 
     //handles search input
     const handleSearchInput = (event: Event) => {
@@ -92,18 +105,53 @@ export default function Search(
     }, [tagsSearch])
 
     return (
-        <Box className="">
-            <TextField 
-            id="task-input" 
-            label="Search for a task" 
-            variant="outlined" 
-            className="shadow-inner bg-white grid self-center"
-            value={searchInput}
-            onChange={(e: any) => {handleSearchInput(e)}}/>
+        isSearchVisible === true
+        ?   <>
+                <p className="pb-2">Filtering</p>
+                <TextField 
+                id="task-input" 
+                label="Search for a task" 
+                variant="outlined" 
+                className="shadow-inner bg-white grid self-center"
+                value={searchInput}
+                onChange={(e: any) => {handleSearchInput(e)}}/>
+    
+                <Box className="grid grid-cols-1 2xl:grid-cols-2">
+                    <TagsSearch
+                    tagsSearch={tagsSearch}
+                    setTagsSearch={setTagsSearch}/>
+        
+                    <ListFilter
+                    isVisible={isVisible}
+                    setIsVisible={setIsVisible}/>
+                </Box>
 
-            <TagsSearch
-            tagsSearch={tagsSearch}
-            setTagsSearch={setTagsSearch}/>
-        </Box>
+                <Tooltip 
+                title='Hide filters' 
+                className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
+                sx={{
+                    border: '1px solid', 
+                    borderColor: '#00000044'
+                }}>
+                    <IconButton 
+                    className="grid grid-cols-1 mx-auto"
+                    onClick={() => {setIsSearchVisible(false)}}>
+                        <KeyboardArrowUpIcon/>
+                    </IconButton>
+                </Tooltip>
+            </>
+        :   <Tooltip 
+            title='Show filters' 
+            className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
+            sx={{
+                border: '1px solid', 
+                borderColor: '#00000044'
+            }}>
+                <IconButton 
+                className="grid grid-cols-1 mx-auto"
+                onClick={() => {setIsSearchVisible(true)}}>
+                    <KeyboardArrowDownIcon/>
+                </IconButton>
+            </Tooltip>
     )
 }

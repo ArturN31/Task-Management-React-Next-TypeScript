@@ -30,7 +30,7 @@ export default function Datepicker(
                     withPortal
                     showTimeSelect
                     timeFormat="HH:mm"
-                    timeIntervals={15}
+                    timeIntervals={5}
                     timeCaption="time"
                     dateFormat="d MMMM, yyyy h:mm aa"
                     className="cursor-pointer hover:bg-slate-100 mr-2 rounded p-2 shadow-md border w-full"/>
