@@ -107,11 +107,11 @@ export default function Search(
     return (
         isSearchVisible === true
         ?   <>
-                <p className="pb-2">Filtering</p>
+                <p className="pb-2 text-white">Filter tasks</p>
                 <TextField 
                 id="task-input" 
                 label="Search for a task" 
-                variant="outlined" 
+                variant="filled" 
                 className="shadow-inner bg-white grid self-center"
                 value={searchInput}
                 onChange={(e: any) => {handleSearchInput(e)}}/>
@@ -128,7 +128,7 @@ export default function Search(
 
                 <Tooltip 
                 title='Hide filters' 
-                className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
+                className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3 hover:bg-amber-500" 
                 sx={{
                     border: '1px solid', 
                     borderColor: '#00000044'
@@ -142,13 +142,13 @@ export default function Search(
             </>
         :   <Tooltip 
             title='Show filters' 
-            className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
+            className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3 hover:bg-amber-500" 
             sx={{
                 border: '1px solid', 
                 borderColor: '#00000044'
             }}>
                 <IconButton 
-                className="grid grid-cols-1 mx-auto"
+                className="grid grid-cols-1 mx-auto hover:bg-amber-500"
                 onClick={() => {setIsSearchVisible(true)}}>
                     <KeyboardArrowDownIcon/>
                 </IconButton>

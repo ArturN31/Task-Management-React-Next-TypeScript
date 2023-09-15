@@ -25,22 +25,9 @@ export default function Task(
     isOverdue: boolean, 
     updateTaskAPI: Function}) {
 
-  let completedStyle = {};
-  isCompleted === true 
-    ? completedStyle = {
-      background: 'linear-gradient(to top, white, white 15%, rgb(4 190 137))'} 
-    : completedStyle = {}
-
-  let overdueStyle = {};
-  isOverdue === true
-    ? overdueStyle = {
-      background: 'linear-gradient(to top, white, white 15%, rgb(255 85 80))'}
-    : overdueStyle = {}
-
   return (
     <Box 
-    className="mt-4 mx-2 border rounded bg-white shadow-md h-fit" 
-    style={{...completedStyle, ...overdueStyle}} 
+    className="mt-4 mx-2 border rounded bg-white shadow-md h-fit"
     sx={{
       borderLeft: '1px solid #00000044',
       borderRight: '1px solid #00000044',

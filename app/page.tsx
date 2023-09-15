@@ -15,7 +15,6 @@ import Search from "@/components/search/search";
 // - Implement task editing.
 // - Implement reminders for due dates.
 // - Remove/Archive overdue tasks after a period of time ~ 1 day.
-// - Task removal confirmation dialog box.
 
 export default function Home() {
   const [list, setList] = useState<Array<TaskProps & {_id: string}>>(
@@ -173,17 +172,11 @@ export default function Home() {
 
   return (
     <main className="grid grid-cols-1 justify-items-center">
-      <h1 
-      className="text-2xl p-4 w-screen bg-emerald-700 text-center border-b" 
-      style={borderColorCustom}>
-        HEADER
-      </h1>
+      <h1 className="text-2xl p-4 pb-1 text-center text-white">Task Management</h1>
 
       {/* FORM */}
-      <Box className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-        <Box 
-        className="p-4 border bg-slate-50 rounded-bl-md rounded-br-md shadow-md h-fit" 
-        style={borderColorCustom}>
+      <Box className="grid grid-cols-1 md:grid-cols-2 w-full">
+        <Box className="border border-black rounded m-4 mb-0 p-2 pb-4 h-fit shadow-lg bg-slate-900/[0.5]">
           {isFormVisible === true
             ? <Box
               component="form"
@@ -191,11 +184,12 @@ export default function Home() {
               noValidate
               autoComplete="off"
               className="w-full grid">
-                <p className="pb-2">Add</p>
+                <p className="pb-2 text-white">Add tasks</p>
                 <TextField 
                 id="task-input" 
-                label="Task content" 
-                variant="outlined" 
+                label="Task content"
+                variant="filled" 
+
                 className="shadow-inner bg-white"
                 value={taskInput}
                 onChange={(e: any) => {handleTaskInput(e)}}/>
@@ -211,8 +205,8 @@ export default function Home() {
                 <Box className="grid">
                   <Box className="flex justify-center gap-4">
                     <Tooltip 
-                    title='Show filters' 
-                    className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
+                    title='Hide form' 
+                    className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3 hover:bg-amber-500" 
                     sx={{
                         border: '1px solid', 
                         borderColor: '#00000044'
@@ -224,7 +218,7 @@ export default function Home() {
                     <Tooltip title='Add task'>
                       <IconButton
                       type="submit"
-                      className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
+                      className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3 hover:bg-green-500" 
                       sx={{
                         border: '1px solid', 
                         borderColor: '#00000044'
@@ -237,8 +231,8 @@ export default function Home() {
               </Box>
             : <Box className="flex justify-center">
                 <Tooltip 
-                title='Show filters' 
-                className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3" 
+                title='Show form' 
+                className="shadow-md p-2 w-fit h-fit text-black bg-white mt-3 hover:bg-amber-500" 
                 sx={{
                     border: '1px solid', 
                     borderColor: '#00000044'
@@ -252,9 +246,7 @@ export default function Home() {
               </Box>
           }
         </Box>
-        <Box 
-        className="p-4 border bg-slate-50 rounded-bl-md rounded-br-md shadow-md h-fit" 
-        style={borderColorCustom}>
+        <Box className="border border-black rounded m-4 mb-0 p-2 pb-4 h-fit shadow-lg bg-slate-900/[0.5]">
           <Search
           searchInput={searchInput}
           setSearchInput={setSearchInput}
@@ -267,7 +259,7 @@ export default function Home() {
       </Box>
         
       {/* TASKS output */}
-      <Box className="grid grid-flow-row-dense grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 w-full">
+      <Box className="grid grid-flow-row-dense grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 w-full sm:w-fit">
         {isVisible.inProgress === true
           ? <ListOfInProgressTasks 
             tasks={...list} 

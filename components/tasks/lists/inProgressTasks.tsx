@@ -32,8 +32,8 @@ export default function ListOfInProgressTasks(
     }
         
     return (
-        <Box className="border rounded m-4 mb-0 p-2 pb-4 h-fit shadow-sm">
-            <h2 className="text-xl text-center mt-4">In progress</h2>
+        <Box className="border border-black rounded m-4 mb-0 p-2 pb-4 h-fit shadow-lg bg-slate-900/[0.5]">
+            <h2 className="text-xl text-center mt-4 text-white">In progress</h2>
             <ListOutput 
             tasks={...arr} 
             list={list} 
