@@ -1,23 +1,16 @@
 'use client'
 
-type TaskProps = {
-    content: string;
-    due: Date | undefined;
-    tags: string[];
-    isCompleted: boolean;
-    isOverdue: boolean;
-}
+import { TaskProps } from "@/lib/types";
 
 import ListOutput from "./listOutput";
 import { Box } from "@mui/material";
 
 export default function ListOfCompletedTasks(
-    {tasks, list, setList, updateTaskAPI}: 
+    {tasks, list, setList}: 
     {
-        tasks: Array<TaskProps & {_id: string}>, 
-        list: Array<TaskProps & {_id: string}>, 
-        setList: Function, 
-        updateTaskAPI: Function}) {
+        tasks: Array<TaskProps>, 
+        list: Array<TaskProps>, 
+        setList: Function}) {
         
     let arr: any;
 
@@ -38,8 +31,7 @@ export default function ListOfCompletedTasks(
             <ListOutput 
             tasks={...arr}  
             list={list} 
-            setList={setList} 
-            updateTaskAPI={updateTaskAPI}/>
+            setList={setList}/>
         </Box>
     )
 }

@@ -1,18 +1,6 @@
 'use client'
 
-type TaskProps = {
-    content: string;
-    due: Date | undefined;
-    tags: string[];
-    isCompleted: boolean;
-    isOverdue: boolean;
-}
-
-type isVisibleProps = {
-    inProgress: boolean;
-    completed: boolean;
-    overdue: boolean;
-}
+import { TaskProps, isVisibleProps } from "@/lib/types";
 
 import { TextField, IconButton, Tooltip, Box } from "@mui/material";
 import TagsSearch from "../search/tagsSearch";
@@ -50,14 +38,6 @@ export default function Search(
         }
     }
 
-    //retrieves tasks from api
-    const getTasksFromAPI = async () => {
-        let res: JSON = await fetch('api/tasks')
-            .then((response) => response.json())
-            .then((todos) => {return todos});
-        return res;
-    }
-
     const searchByTaskContent = async (input: string) => {
         let ls = getTasksFromLocalStorage();
         if (ls) { //local storage is set
@@ -68,8 +48,6 @@ export default function Search(
                 if (res) setList(res);
             }   else setList(ls); //if no search input return list of tasks
         }   else { //local storage is not set
-            let tasks = await getTasksFromAPI();
-            localStorage.setItem('tasks', JSON.stringify(tasks));
         }
     }
 
@@ -89,8 +67,6 @@ export default function Search(
                 if (res) setList(res);
             } else setList(ls); //if no search input return list of tasks
         }   else { //local storage is not set
-            let tasks = await getTasksFromAPI();
-            localStorage.setItem('tasks', JSON.stringify(tasks));
         }
     }
     

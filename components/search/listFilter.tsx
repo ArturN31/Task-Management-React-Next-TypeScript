@@ -1,15 +1,10 @@
 'use client'
 import { Box, Tooltip, IconButton } from '@mui/material';
-import NotificationImportantOutlinedIcon from '@mui/icons-material/NotificationImportantOutlined';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 
-type isVisibleProps = {
-    inProgress: boolean;
-    completed: boolean;
-    overdue: boolean;
-  }
+import { isVisibleProps } from "@/lib/types";
 
 export default function ListFilter(
     {isVisible, setIsVisible}: 

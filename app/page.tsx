@@ -12,20 +12,14 @@ import ListOfCompletedTasks from "@/components/tasks/lists/completedTasks";
 import ListOfInProgressTasks from "@/components/tasks/lists/inProgressTasks";
 import Search from "@/components/search/search";
 
+import { TaskProps, isVisibleProps } from "@/lib/types";
+
 // - Implement task editing.
 // - Implement reminders for due dates.
 // - Remove/Archive overdue tasks after a period of time ~ 1 day.
 
 export default function Home() {
-  const [list, setList] = useState<Array<TaskProps & {_id: string}>>(
-    [{
-      _id: '',
-      content: '',
-      due: undefined,
-      tags: [],
-      isCompleted: false,
-      isOverdue: false
-    }]);
+  const [list, setList] = useState<Array<TaskProps>>(Array<TaskProps>);
   const [taskInput, setTaskInput] = useState<string>('');
   const [tagsInput, setTagsInput] = useState<string[]>([]);
   const [dueDate, setDueDate] = useState<Date>();
@@ -38,39 +32,20 @@ export default function Home() {
   })
   const [isFormVisible, setIsFormVisible] = useState<Boolean>(true);
 
-  let borderColorCustom = {borderColor: '#00000044'};
-
-  type isVisibleProps = {
-    inProgress: boolean;
-    completed: boolean;
-    overdue: boolean;
+  const getLocalStorage = () => {
+    if (localStorage.tasks) {
+      let lsTasks: TaskProps[] = JSON.parse(localStorage.tasks);
+      return lsTasks;
+    } return []
   }
 
-  type TaskProps = {
-    content: string;
-    due: Date | undefined;
-    tags: string[];
-    isCompleted: boolean;
-    isOverdue: boolean;
-  }
-
-  //getting tasks from an api
-  const getApiData = async () => {
-    let data = await fetch('api/tasks')
-      .then((response) => response.json())
-      .then((todos) => {return todos})
-    setList(data);
-  }
-  
-  //get data from mongodb on page load
   useEffect(() => {
-    getApiData();
+    let arr = getLocalStorage();
+    if (arr) setList(arr);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  //posting task to api
-  const addTaskAPI = async (task: TaskProps) => {
-    //getting utc date to keep timezone when stringifying date
-    let date = task.due;
+  const prepDateToStringify = (date: Date | undefined) => {
     let utcDate = date  
     ? new Date(Date.UTC(
       date.getFullYear(), 
@@ -79,53 +54,57 @@ export default function Home() {
       date.getHours(), 
       date.getMinutes()))
     : undefined;
-
-    let req = {...task, due: utcDate}
-
-    await fetch('api/tasks', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(req)
-    })
+    return utcDate;
   }
 
   //adding task
-  const Add = (
+  const Add = async (
     input: string, 
     tags: string[], 
     due: Date | undefined
     ) => {
       if (input !== '') {
         let task = {
+          id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
           content: input.charAt(0).toUpperCase() + input.slice(1),
           isCompleted: false,
-          due: due,
+          due: due ? due : undefined,
           tags: tags,
           isOverdue: false
         }
-        addTaskAPI(task); //adds task to db
+        if (list.length >= 1) { //list contains objects - add as last
+          //preping task to add it to local storage
+          let utcDate = prepDateToStringify(task.due);
+          task.due = utcDate;
+          let stringifiedTask = JSON.parse(JSON.stringify(task));
+
+          //getting prev list of tasks and pushing new preped task to it
+          let prevList: Array<TaskProps> = [...list];
+          prevList.push(stringifiedTask);
+
+          //setting ls
+          localStorage.setItem('tasks', JSON.stringify(prevList));
+        } else { //empty list - add as first
+          //preping task to add it to local storage
+          let utcDate = prepDateToStringify(task.due);
+          task.due = utcDate;
+          let arrToStringify: any = [];
+          arrToStringify.push(task);
+
+          //setting ls
+          localStorage.setItem('tasks', JSON.stringify(arrToStringify));
+        }
+
+        //resetting inputs
+        setTagsInput([]);
+        setTaskInput('');
+        setDueDate(undefined);
       }
   }
 
-  //handles update of tasks edit/completed/overdue
-  const updateTaskAPI = async (id: string, functionality: string, state?: boolean) => {
-    let req = {'id': id, 'functionality': functionality, 'state': state};
-    await fetch('api/tasks', {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(req)
-    })
-  }
-
   //marks tasks as overdue when due date is in the past
-  const MarkAsOverdue = (tasks: Array<TaskProps & {_id: string}>) => {
-    let arr = tasks.map((task: TaskProps & {_id: string}) => {
+  const MarkAsOverdue = (tasks: Array<TaskProps>) => {
+    let arr = tasks.map((task: TaskProps) => {
       //if task is not overdue and the task is not marked as completed
       if (task.due && task.isOverdue !== true && task.isCompleted !== true) {
         //getting utc date to keep timezone when stringifying date
@@ -143,17 +122,13 @@ export default function Home() {
         //if tasks due date is in the past set task as overdue
         if (task.due < now) {
           task.isOverdue = true;
-          updateTaskAPI(task._id, 'overdue', true); //updates task as overdue
+          // updateTaskAPI(task._id, 'overdue', true); //updates task as overdue
           return task;
         } else return task;
       } return task;
     })
-    //filters out updated tasks
-    //const results = tasks.filter(({ isOverdue: id1 }) => !arr.some(({ isOverdue: id2 }) => id2 === id1));
-    //console.log(results);
-    //if there are any changes update the state
-    //if (results.length !== 0) setList(arr)
     setList(arr);
+    localStorage.setItem('tasks', JSON.stringify(arr));
   }
 
   useEffect(() => {
@@ -180,7 +155,7 @@ export default function Home() {
           {isFormVisible === true
             ? <Box
               component="form"
-              onSubmit={(e) => Add(taskInput, tagsInput, dueDate)}
+              onSubmit={() => Add(taskInput, tagsInput, dueDate)}
               noValidate
               autoComplete="off"
               className="w-full grid">
@@ -264,8 +239,7 @@ export default function Home() {
           ? <ListOfInProgressTasks 
             tasks={...list} 
             list={list} 
-            setList={setList} 
-            updateTaskAPI={updateTaskAPI}/>
+            setList={setList}/>
           : ''
         }
         
@@ -273,8 +247,7 @@ export default function Home() {
           ? <ListOfCompletedTasks 
             tasks={...list} 
             list={list} 
-            setList={setList} 
-            updateTaskAPI={updateTaskAPI}/>
+            setList={setList}/>
           : ''
         }
         
@@ -282,8 +255,7 @@ export default function Home() {
           ? <ListOfOverdueTasks 
             tasks={...list} 
             list={list} 
-            setList={setList} 
-            updateTaskAPI={updateTaskAPI}/>
+            setList={setList}/>
           : ''
         }
       </Box>
