@@ -7,5 +7,11 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   plugins: [],
+  safelist: [
+    'bg-white', 
+    'mt-3', 
+    'hover:bg-amber-500',
+    'hover:bg-green-500'
+  ]
 }
 export default config
