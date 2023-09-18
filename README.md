@@ -2,11 +2,13 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Features
 
-Add, remove, and complete tasks.
+Add and remove tasks - content, tags, and due date.
 
-Task tags and due date.
+Marking tasks as completed/not completed.
 
-Task will become overdue if not marked as completed.
+Tasks will become overdue if not marked as completed.
+
+Filtering by task content, tags, and list (in progress, completed, and overdue).
 
 ## Getting Started
 

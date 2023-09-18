@@ -6,25 +6,25 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
 
-export default function Tags(
-    {tagsInput, setTagsInput}: 
+export default function TagsSearch(
+    {tagsSearch, setTagsSearch}: 
     {
-        tagsInput: string[], 
-        setTagsInput: Function}) {
+        tagsSearch: string[], 
+        setTagsSearch: Function}) {
 
     let borderColorCustom = {border:'1px solid #00000044'};
 
     //handles addition of a tag to array
     const addTag = (tag: string) => {
-        let arr = [...tagsInput];
+        let arr = [...tagsSearch];
         arr.push(tag);
-        setTagsInput(arr);
+        setTagsSearch(arr);
     }
 
     //handles removal of a tag from array
     const removeTag = (tag: string) => {
-        let arr = tagsInput.filter((storedTag:string) => {return storedTag !== tag})
-        setTagsInput(arr);
+        let arr = tagsSearch.filter((storedTag:string) => {return storedTag !== tag})
+        setTagsSearch(arr);
     }
 
     return (
@@ -38,7 +38,7 @@ export default function Tags(
                     title="Important" 
                     className="w-fit shadow-md m-1 self-center" 
                     sx={borderColorCustom}>
-                        {tagsInput.indexOf('Important') > -1
+                        {tagsSearch.indexOf('Important') > -1
                             ? <IconButton
                                 className=''
                                 color="primary"
@@ -56,7 +56,7 @@ export default function Tags(
                     title="Birthday" 
                     className="w-fit shadow-md m-1 self-center" 
                     sx={borderColorCustom}>
-                        {tagsInput.indexOf('Birthday') > -1
+                        {tagsSearch.indexOf('Birthday') > -1
                             ? <IconButton
                             color="primary"
                             onClick={() => removeTag('Birthday')}>
@@ -73,7 +73,7 @@ export default function Tags(
                     title="Shopping" 
                     className="w-fit shadow-md m-1 self-center" 
                     sx={borderColorCustom}>
-                        {tagsInput.indexOf('Shopping') > -1
+                        {tagsSearch.indexOf('Shopping') > -1
                             ? <IconButton
                             color="primary"
                             onClick={() => removeTag('Shopping')}>
@@ -90,7 +90,7 @@ export default function Tags(
                     title="Work" 
                     className="w-fit shadow-md m-1 self-center" 
                     sx={borderColorCustom}>
-                        {tagsInput.indexOf('Work') > -1
+                        {tagsSearch.indexOf('Work') > -1
                             ? <IconButton
                             color="primary"
                             onClick={() => removeTag('Work')}>
@@ -107,7 +107,7 @@ export default function Tags(
                     title="Meeting" 
                     className="w-fit shadow-md m-1 self-center" 
                     sx={borderColorCustom}>
-                        {tagsInput.indexOf('Meeting') > -1
+                        {tagsSearch.indexOf('Meeting') > -1
                             ? <IconButton
                             color="primary"
                             onClick={() => removeTag('Meeting')}>
