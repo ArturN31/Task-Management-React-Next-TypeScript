@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 body {
-    background-image: url(../public/rainbow-vortex.svg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    overflow-x: hidden;
-    background-position: 95% 0;
+	background-image: url(../public/rainbow-vortex.svg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	min-height: 100vh;
+	overflow-x: hidden;
+	background-position: 95% 0;
 }
 
 #datepicker {
-    border-color: #00000044;
+	border-color: #00000044;
 }
