@@ -8,12 +8,13 @@ export default function TaskContent({
 	tags,
 }: {
 	content: string;
-	due: Date | undefined;
+	due: string | undefined;
 	tags: string[];
 }) {
 	let dateArray: string[] = [];
 	if (due) {
-		dateArray = due?.toString().split('T');
+		let date = new Date(due);
+		dateArray = date.toString().split('T');
 		dateArray[1] = dateArray[1].split('.')[0];
 	}
 

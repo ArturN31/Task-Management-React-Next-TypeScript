@@ -1,7 +1,5 @@
 'use client';
 
-import { TaskProps, isVisibleProps } from '@/lib/types';
-
 import { TextField, IconButton, Tooltip, Box } from '@mui/material';
 import TagsSearch from '../search/tagsSearch';
 import { useEffect, useState } from 'react';

@@ -4,8 +4,6 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 
-import { isVisibleProps } from '@/lib/types';
-
 export default function ListFilter({
 	isVisible,
 	setIsVisible,

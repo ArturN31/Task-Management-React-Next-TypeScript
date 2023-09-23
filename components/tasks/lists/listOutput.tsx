@@ -3,17 +3,7 @@
 import { Box } from '@mui/material';
 import Task from '@/components/tasks/task/task';
 
-import { TaskProps } from '@/lib/types';
-
-export default function ListOutput({
-	tasks,
-	list,
-	setList,
-}: {
-	tasks: Array<TaskProps>;
-	list: Array<TaskProps>;
-	setList: Function;
-}) {
+export default function ListOutput({ tasks }: { tasks: Array<TaskProps> }) {
 	//renders a grid of tasks
 	return tasks !== undefined ? (
 		<Box>
@@ -22,8 +12,6 @@ export default function ListOutput({
 					<Task
 						key={tasks[item].id}
 						id={tasks[item].id}
-						list={list}
-						setList={setList}
 						content={tasks[item].content}
 						isCompleted={tasks[item].isCompleted}
 						due={tasks[item].due}
@@ -35,8 +23,6 @@ export default function ListOutput({
 				<Task
 					key={tasks[0].id}
 					id={tasks[0].id}
-					list={list}
-					setList={setList}
 					content={tasks[0].content}
 					isCompleted={tasks[0].isCompleted}
 					due={tasks[0].due}

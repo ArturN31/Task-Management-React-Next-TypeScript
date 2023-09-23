@@ -1,8 +1,9 @@
+'use client';
+
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-
-const inter = Inter({ subsets: ['latin'] });
+import { store } from '@/lib/store/store';
+import { Provider } from 'react-redux/es/exports';
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -14,9 +15,5 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	return (
-		<html lang='en'>
-			<body className={inter.className}>{children}</body>
-		</html>
-	);
+	return <Provider store={store}>{children}</Provider>;
 }
