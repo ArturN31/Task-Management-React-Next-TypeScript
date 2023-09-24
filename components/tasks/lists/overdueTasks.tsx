@@ -3,11 +3,7 @@
 import ListOutput from './listOutput';
 import { Box } from '@mui/material';
 
-export default function ListOfOverdueTasks({
-	tasks,
-}: {
-	tasks: Array<TaskProps>;
-}) {
+export default function ListOfOverdueTasks({ tasks }: { tasks: Array<TaskProps> }) {
 	let arr: any;
 	if (tasks !== undefined) {
 		//returns tasks that are marked as overdue

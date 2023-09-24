@@ -6,28 +6,22 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
 
-export default function TagsSearch({
-	tagsSearch,
-	setTagsSearch,
-}: {
-	tagsSearch: string[];
-	setTagsSearch: Function;
-}) {
+import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
+import { addTagsToSearch, removeTagsToSearch } from '@/lib/store/inputsSlice';
+
+export default function TagsSearch() {
 	let borderColorCustom = { border: '1px solid #00000044' };
+	const dispatch = useAppDispatch();
+	const storeInputs = useAppSelector((state) => state.inputs); //redux inputs store
 
 	//handles addition of a tag to array
 	const addTag = (tag: string) => {
-		let arr = [...tagsSearch];
-		arr.push(tag);
-		setTagsSearch(arr);
+		dispatch(addTagsToSearch(tag));
 	};
 
 	//handles removal of a tag from array
 	const removeTag = (tag: string) => {
-		let arr = tagsSearch.filter((storedTag: string) => {
-			return storedTag !== tag;
-		});
-		setTagsSearch(arr);
+		dispatch(removeTagsToSearch(tag));
 	};
 
 	return (
@@ -41,7 +35,7 @@ export default function TagsSearch({
 						title='Important'
 						className='self-center m-1 shadow-md w-fit'
 						sx={borderColorCustom}>
-						{tagsSearch.indexOf('Important') > -1 ? (
+						{storeInputs.searchByTagsInput.indexOf('Important') > -1 ? (
 							<IconButton
 								className=''
 								color='primary'
@@ -59,7 +53,7 @@ export default function TagsSearch({
 						title='Birthday'
 						className='self-center m-1 shadow-md w-fit'
 						sx={borderColorCustom}>
-						{tagsSearch.indexOf('Birthday') > -1 ? (
+						{storeInputs.searchByTagsInput.indexOf('Birthday') > -1 ? (
 							<IconButton
 								color='primary'
 								onClick={() => removeTag('Birthday')}>
@@ -76,7 +70,7 @@ export default function TagsSearch({
 						title='Shopping'
 						className='self-center m-1 shadow-md w-fit'
 						sx={borderColorCustom}>
-						{tagsSearch.indexOf('Shopping') > -1 ? (
+						{storeInputs.searchByTagsInput.indexOf('Shopping') > -1 ? (
 							<IconButton
 								color='primary'
 								onClick={() => removeTag('Shopping')}>
@@ -93,7 +87,7 @@ export default function TagsSearch({
 						title='Work'
 						className='self-center m-1 shadow-md w-fit'
 						sx={borderColorCustom}>
-						{tagsSearch.indexOf('Work') > -1 ? (
+						{storeInputs.searchByTagsInput.indexOf('Work') > -1 ? (
 							<IconButton
 								color='primary'
 								onClick={() => removeTag('Work')}>
@@ -110,7 +104,7 @@ export default function TagsSearch({
 						title='Meeting'
 						className='self-center m-1 shadow-md w-fit'
 						sx={borderColorCustom}>
-						{tagsSearch.indexOf('Meeting') > -1 ? (
+						{storeInputs.searchByTagsInput.indexOf('Meeting') > -1 ? (
 							<IconButton
 								color='primary'
 								onClick={() => removeTag('Meeting')}>

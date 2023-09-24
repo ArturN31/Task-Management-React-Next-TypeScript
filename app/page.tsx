@@ -2,11 +2,26 @@
 
 import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
 import { addTask, overdueTask } from '@/lib/store/tasksListSlice';
+import { setTaskContentInput, setTaskTagsToEmpty, setTaskDateInput } from '@/lib/store/inputsSlice';
+import {
+	showInProgress,
+	hideInProgress,
+	showCompleted,
+	hideCompleted,
+	showOverdue,
+	hideOverdue,
+	showForm,
+	hideForm,
+	showSearch,
+	hideSearch,
+	showRemoveDialog,
+	hideRemoveDialog,
+} from '@/lib/store/componentVisibilitySlice';
 
 import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Box, TextField, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -24,38 +39,17 @@ import Search from '@/components/search/search';
 // - Remove/Archive overdue tasks after a period of time ~ 1 day.
 
 export default function Home() {
-	const storeTasks = useAppSelector((state) => state.tasks.tasks); //redux store
-
-	const [list, setList] = useState<Array<TaskProps>>(Array<TaskProps>);
-	const [taskInput, setTaskInput] = useState<string>('');
-	const [tagsInput, setTagsInput] = useState<string[]>([]);
-	const [dueDate, setDueDate] = useState<Date>();
-	const [searchInput, setSearchInput] = useState<string>('');
-	const [tagsSearch, setTagsSearch] = useState<string[]>([]);
-
-	const [isVisible, setIsVisible] = useState<isVisibleProps>({
-		inProgress: true,
-		completed: true,
-		overdue: true,
-	});
-	const [isFormVisible, setIsFormVisible] = useState<Boolean>(true);
-
+	const storeTasks = useAppSelector((state) => state.tasks.tasks); //redux tasks store
+	const storeInputs = useAppSelector((state) => state.inputs); //redux inputs store
+	const storeComponentVisibility = useAppSelector((state) => state.visibility); //redux component visibility store
 	const dispatch = useAppDispatch();
 
 	//adding task
-	const Add = async (
-		input: string,
-		tags: string[],
-		due: Date | undefined,
-		event: Event
-	) => {
+	const Add = async (input: string, tags: string[], due: Date | undefined, event: Event) => {
 		event.preventDefault();
 		if (input !== '') {
 			let task = {
-				id:
-					'id_' +
-					Math.random().toString(16).slice(2) +
-					Math.random().toString(16).slice(2),
+				id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
 				content: input.charAt(0).toUpperCase() + input.slice(1),
 				isCompleted: false,
 				due: due ? due.toISOString() : undefined,
@@ -65,9 +59,9 @@ export default function Home() {
 			if (task) dispatch(addTask(task)); //adding task to redux store
 
 			//resetting inputs
-			setTagsInput([]);
-			setTaskInput('');
-			setDueDate(undefined);
+			dispatch(setTaskContentInput(''));
+			dispatch(setTaskTagsToEmpty(['']));
+			dispatch(setTaskDateInput(new Date()));
 		}
 	};
 
@@ -107,27 +101,25 @@ export default function Home() {
 
 	//handles the input of task
 	const handleTaskInput = (event: Event) => {
-		let value: string = '';
 		let e = event?.target as HTMLInputElement;
-		if (e) value = e.value;
-		return setTaskInput(value);
+		if (e) dispatch(setTaskContentInput(e.value));
 	};
 
 	return (
 		<html lang='en'>
 			<body className={inter.className}>
 				<main className='grid grid-cols-1 justify-items-center'>
-					<h1 className='p-4 pb-1 text-2xl text-center text-white'>
-						Task Management
-					</h1>
+					<h1 className='p-4 pb-1 text-2xl text-center text-white'>Task Management</h1>
 
 					{/* FORM */}
 					<Box className='grid w-full grid-cols-1 md:grid-cols-2'>
 						<Box className='border border-black rounded m-4 mb-0 p-2 pb-4 h-fit shadow-lg bg-slate-900/[0.5]'>
-							{isFormVisible === true ? (
+							{storeComponentVisibility.form === true ? (
 								<Box
 									component='form'
-									onSubmit={(e: any) => Add(taskInput, tagsInput, dueDate, e)}
+									onSubmit={(e: any) =>
+										Add(storeInputs.taskContentInput, storeInputs.taskTagsInput, storeInputs.taskDateInput, e)
+									}
 									noValidate
 									autoComplete='off'
 									className='grid w-full'>
@@ -137,21 +129,15 @@ export default function Home() {
 										label='Task content'
 										variant='filled'
 										className='bg-white shadow-inner'
-										value={taskInput}
+										value={storeInputs.taskContentInput}
 										onChange={(e: any) => {
 											handleTaskInput(e);
 										}}
 									/>
 									<Box className='grid grid-cols-1 2xl:grid-cols-2'>
-										<Tags
-											tagsInput={tagsInput}
-											setTagsInput={setTagsInput}
-										/>
+										<Tags />
 
-										<Datepicker
-											dueDate={dueDate}
-											setDueDate={setDueDate}
-										/>
+										<Datepicker />
 									</Box>
 									<Box className='grid'>
 										<Box className='flex justify-center gap-4'>
@@ -164,7 +150,7 @@ export default function Home() {
 												}}>
 												<IconButton
 													onClick={() => {
-														setIsFormVisible(false);
+														dispatch(showForm(false));
 													}}>
 													<KeyboardArrowUpIcon />
 												</IconButton>
@@ -195,7 +181,7 @@ export default function Home() {
 										<IconButton
 											className='grid grid-cols-1 mx-auto'
 											onClick={() => {
-												setIsFormVisible(true);
+												dispatch(showForm(true));
 											}}>
 											<KeyboardArrowDownIcon />
 										</IconButton>
@@ -204,37 +190,17 @@ export default function Home() {
 							)}
 						</Box>
 						<Box className='border border-black rounded m-4 mb-0 p-2 pb-4 h-fit shadow-lg bg-slate-900/[0.5]'>
-							<Search
-								searchInput={searchInput}
-								setSearchInput={setSearchInput}
-								tagsSearch={tagsSearch}
-								setTagsSearch={setTagsSearch}
-								setList={setList}
-								isVisible={isVisible}
-								setIsVisible={setIsVisible}
-							/>
+							<Search />
 						</Box>
 					</Box>
 
 					{/* TASKS output */}
 					<Box className='grid w-full grid-flow-row-dense grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 sm:w-fit'>
-						{isVisible.inProgress === true ? (
-							<ListOfInProgressTasks tasks={...storeTasks} />
-						) : (
-							''
-						)}
+						{storeComponentVisibility.inProgress === true ? <ListOfInProgressTasks tasks={...storeTasks} /> : ''}
 
-						{isVisible.completed === true ? (
-							<ListOfCompletedTasks tasks={...storeTasks} />
-						) : (
-							''
-						)}
+						{storeComponentVisibility.completed === true ? <ListOfCompletedTasks tasks={...storeTasks} /> : ''}
 
-						{isVisible.overdue === true ? (
-							<ListOfOverdueTasks tasks={...storeTasks} />
-						) : (
-							''
-						)}
+						{storeComponentVisibility.overdue === true ? <ListOfOverdueTasks tasks={...storeTasks} /> : ''}
 					</Box>
 				</main>
 			</body>

@@ -4,13 +4,13 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 
-export default function ListFilter({
-	isVisible,
-	setIsVisible,
-}: {
-	isVisible: isVisibleProps;
-	setIsVisible: Function;
-}) {
+import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
+import { showInProgress, showCompleted, showOverdue } from '@/lib/store/componentVisibilitySlice';
+
+export default function ListFilter() {
+	const storeComponentVisibility = useAppSelector((state) => state.visibility); //redux component visibility store
+	const dispatch = useAppDispatch();
+
 	let borderColorCustom = { border: '1px solid #00000044' };
 
 	return (
@@ -24,19 +24,14 @@ export default function ListFilter({
 						title='In Progress'
 						className='self-center m-1 shadow-md w-fit'
 						sx={borderColorCustom}>
-						{isVisible.inProgress === true ? (
+						{storeComponentVisibility.inProgress === true ? (
 							<IconButton
 								color='primary'
-								onClick={() =>
-									setIsVisible({ ...isVisible, inProgress: false })
-								}>
+								onClick={() => dispatch(showInProgress(false))}>
 								<ScheduleIcon />
 							</IconButton>
 						) : (
-							<IconButton
-								onClick={() =>
-									setIsVisible({ ...isVisible, inProgress: true })
-								}>
+							<IconButton onClick={() => dispatch(showInProgress(true))}>
 								<ScheduleIcon />
 							</IconButton>
 						)}
@@ -46,17 +41,14 @@ export default function ListFilter({
 						title='Completed'
 						className='self-center m-1 shadow-md w-fit'
 						sx={borderColorCustom}>
-						{isVisible.completed === true ? (
+						{storeComponentVisibility.completed === true ? (
 							<IconButton
 								color='primary'
-								onClick={() =>
-									setIsVisible({ ...isVisible, completed: false })
-								}>
+								onClick={() => dispatch(showCompleted(false))}>
 								<EventAvailableIcon />
 							</IconButton>
 						) : (
-							<IconButton
-								onClick={() => setIsVisible({ ...isVisible, completed: true })}>
+							<IconButton onClick={() => dispatch(showCompleted(true))}>
 								<EventAvailableIcon />
 							</IconButton>
 						)}
@@ -66,15 +58,14 @@ export default function ListFilter({
 						title='Overdue'
 						className='self-center m-1 shadow-md w-fit'
 						sx={borderColorCustom}>
-						{isVisible.overdue === true ? (
+						{storeComponentVisibility.overdue === true ? (
 							<IconButton
 								color='primary'
-								onClick={() => setIsVisible({ ...isVisible, overdue: false })}>
+								onClick={() => dispatch(showOverdue(false))}>
 								<EventBusyIcon />
 							</IconButton>
 						) : (
-							<IconButton
-								onClick={() => setIsVisible({ ...isVisible, overdue: true })}>
+							<IconButton onClick={() => dispatch(showOverdue(true))}>
 								<EventBusyIcon />
 							</IconButton>
 						)}

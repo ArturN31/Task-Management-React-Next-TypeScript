@@ -4,15 +4,13 @@ import { Box } from '@mui/material';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-export default function Datepicker({
-	dueDate,
-	setDueDate,
-}: {
-	dueDate: Date | undefined;
-	setDueDate: Function;
-}) {
-	//handles date choice
-	const handleDueDate = (date: Date) => setDueDate(date);
+import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
+import { setTaskDateInput } from '@/lib/store/inputsSlice';
+
+export default function Datepicker() {
+	const dispatch = useAppDispatch();
+	const storeInputs = useAppSelector((state) => state.inputs);
+	const handleDueDate = (date: Date) => dispatch(setTaskDateInput(date));
 
 	let borderColorCustom = { borderColor: '#00000044' };
 
@@ -25,7 +23,7 @@ export default function Datepicker({
 				<Box className='grid items-center justify-center'>
 					<DatePicker
 						id='datepicker'
-						selected={dueDate}
+						selected={storeInputs.taskDateInput}
 						placeholderText='Choose date'
 						onChange={(date: Date) => handleDueDate(date)}
 						withPortal

@@ -101,9 +101,7 @@ export default function TaskBtns({
 				}}
 				aria-labelledby='alert-dialog-title'
 				aria-describedby='alert-dialog-description'>
-				<DialogTitle id='alert-dialog-title'>
-					Do you really want to delete this task?
-				</DialogTitle>
+				<DialogTitle id='alert-dialog-title'>Do you really want to delete this task?</DialogTitle>
 				<DialogActions>
 					<Button
 						onClick={() => {

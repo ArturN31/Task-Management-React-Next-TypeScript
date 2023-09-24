@@ -7,10 +7,21 @@ interface TaskProps {
 	isOverdue: boolean;
 }
 
-interface isVisibleProps {
+interface InputProps {
+	taskInput: string;
+	tagsInput: string[];
+	dateInput: string | undefined;
+	searchByContentInput: string;
+	searchByTagsInput: string[];
+}
+
+interface ComponentsVisibility {
 	inProgress: boolean;
 	completed: boolean;
 	overdue: boolean;
+	form: boolean;
+	search: boolean;
+	removeDialog: boolean;
 }
 
 type TaskState = {
