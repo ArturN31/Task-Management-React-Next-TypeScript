@@ -15,6 +15,11 @@ interface InputProps {
 	searchByTagsInput: string[];
 }
 
+interface SearchProps {
+	searchByContent: TaskProps[];
+	searchByTags: TaskProps[];
+}
+
 interface ComponentsVisibility {
 	inProgress: boolean;
 	completed: boolean;

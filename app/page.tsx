@@ -3,20 +3,8 @@
 import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
 import { addTask, overdueTask } from '@/lib/store/tasksListSlice';
 import { setTaskContentInput, setTaskTagsToEmpty, setTaskDateInput } from '@/lib/store/inputsSlice';
-import {
-	showInProgress,
-	hideInProgress,
-	showCompleted,
-	hideCompleted,
-	showOverdue,
-	hideOverdue,
-	showForm,
-	hideForm,
-	showSearch,
-	hideSearch,
-	showRemoveDialog,
-	hideRemoveDialog,
-} from '@/lib/store/componentVisibilitySlice';
+import { showForm } from '@/lib/store/componentVisibilitySlice';
+import { setTasksToDisplay } from '@/lib/store/tasksDisplaySlice';
 
 import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
@@ -42,12 +30,34 @@ export default function Home() {
 	const storeTasks = useAppSelector((state) => state.tasks.tasks); //redux tasks store
 	const storeInputs = useAppSelector((state) => state.inputs); //redux inputs store
 	const storeComponentVisibility = useAppSelector((state) => state.visibility); //redux component visibility store
+	const storeTasksSearch = useAppSelector((state) => state.search); //redux task search store
+	const storeTasksDisplay = useAppSelector((state) => state.display.tasks); //redux tasks display store
 	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		dispatch(setTasksToDisplay(storeTasks));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [storeTasks]);
+
+	useEffect(() => {
+		console.log(storeTasksSearch);
+		//if searching by content
+		if (storeTasksSearch.searchByContent.length > 0 && storeTasksSearch.searchByContent[0].id !== '')
+			dispatch(setTasksToDisplay(storeTasksSearch.searchByContent));
+
+		//if searching by tags
+		if (storeTasksSearch.searchByTags.length > 0) dispatch(setTasksToDisplay(storeTasksSearch.searchByTags));
+
+		//if content search empty
+		if (storeTasksSearch.searchByContent.length === 0 && storeTasksSearch.searchByTags.length > 0)
+			dispatch(setTasksToDisplay(storeTasksSearch.searchByContent));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [storeTasksSearch]);
 
 	//adding task
 	const Add = async (input: string, tags: string[], due: Date | undefined, event: Event) => {
 		event.preventDefault();
-		if (input !== '') {
+		if (input !== '' && tags[0] !== '') {
 			let task = {
 				id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
 				content: input.charAt(0).toUpperCase() + input.slice(1),
@@ -196,11 +206,23 @@ export default function Home() {
 
 					{/* TASKS output */}
 					<Box className='grid w-full grid-flow-row-dense grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 sm:w-fit'>
-						{storeComponentVisibility.inProgress === true ? <ListOfInProgressTasks tasks={...storeTasks} /> : ''}
+						{storeComponentVisibility.inProgress === true ? (
+							<ListOfInProgressTasks tasks={...storeTasksDisplay} />
+						) : (
+							''
+						)}
 
-						{storeComponentVisibility.completed === true ? <ListOfCompletedTasks tasks={...storeTasks} /> : ''}
+						{storeComponentVisibility.completed === true ? (
+							<ListOfCompletedTasks tasks={...storeTasksDisplay} />
+						) : (
+							''
+						)}
 
-						{storeComponentVisibility.overdue === true ? <ListOfOverdueTasks tasks={...storeTasks} /> : ''}
+						{storeComponentVisibility.overdue === true ? (
+							<ListOfOverdueTasks tasks={...storeTasksDisplay} />
+						) : (
+							''
+						)}
 					</Box>
 				</main>
 			</body>

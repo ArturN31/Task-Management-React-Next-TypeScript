@@ -33,13 +33,5 @@ export const initialState: TaskState = {
 			isCompleted: false,
 			isOverdue: false,
 		},
-		{
-			id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
-			content: 'Sample task - no date & tags',
-			due: undefined,
-			tags: [],
-			isCompleted: false,
-			isOverdue: false,
-		},
 	],
 };

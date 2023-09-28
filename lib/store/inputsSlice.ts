@@ -36,7 +36,6 @@ const inputsSlice = createSlice({
 		},
 		setSearchByContentInput(state, action: PayloadAction<string>) {
 			state.searchByContentInput = action.payload;
-			console.log(state.searchByContentInput);
 		},
 		addTagsToSearch(state, action: PayloadAction<string>) {
 			let arr: string[] = [];

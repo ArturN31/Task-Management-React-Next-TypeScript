@@ -8,15 +8,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
-import {
-	setTaskContentInput,
-	addTaskTags,
-	removeTaskTags,
-	setTaskDateInput,
-	setSearchByContentInput,
-	addTagsToSearch,
-	removeTagsToSearch,
-} from '@/lib/store/inputsSlice';
+import { setSearchByContentInput } from '@/lib/store/inputsSlice';
+import { taskSearchByContent, taskSearchByTags } from '@/lib/store/searchTasksListSlice';
 import { showSearch } from '@/lib/store/componentVisibilitySlice';
 
 export default function Search() {
@@ -33,38 +26,36 @@ export default function Search() {
 	};
 
 	const searchByTaskContent = async (input: string) => {
-		// if (input !== '') {
-		// 	//if there is search input
-		// 	//filters the list with tasks and returns array with tasks that contain input
-		// 	let res: TaskProps[] = storeTasks.filter((task: TaskProps) =>
-		// 		task.content.toLowerCase().includes(input.toLowerCase())
-		// 	);
-		// 	if (res) setSearch(res);
-		// } else setSearch(storeTasks); //if no search input return list of tasks
+		if (input !== '') {
+			//if there is search input
+			//filters the list with tasks and returns array with tasks that contain input
+			let res: TaskProps[] = storeTasks.filter((task: TaskProps) =>
+				task.content.toLowerCase().includes(input.toLowerCase())
+			);
+			if (res) {
+				dispatch(taskSearchByContent(res)); //setting search state
+			}
+		} else {
+			dispatch(taskSearchByContent(storeTasks));
+		}
 	};
 
 	const searchByTaskTags = async (input: string[]) => {
-		// let ls = getTasksFromLocalStorage();
-		// if (ls) {
-		// 	//local storage is set
-		// 	if (input.length > 0) {
-		// 		//if there is search input
-		// 		let res: TaskProps[] = ls.filter((task: TaskProps) => {
-		// 			//returns tasks that match all and some filtering tags
-		// 			if (
-		// 				task.tags.length === input.length ||
-		// 				task.tags.length < input.length
-		// 			)
-		// 				return task.tags.every((tag: string) => input.indexOf(tag) >= 0);
-		// 			//if more filters than task tags match all
-		// 			if (task.tags.length > input.length)
-		// 				return task.tags.some((tag: string) => input.indexOf(tag) >= 0);
-		// 		});
-		// 		if (res) setList(res);
-		// 	} else setList(ls); //if no search input return list of tasks
-		// } else {
-		// 	//local storage is not set
-		// }
+		console.log(input);
+		//local storage is set
+		if (input[0] !== '') {
+			//if there is search input
+			let res: TaskProps[] = storeTasks.filter((task: TaskProps) => {
+				//returns tasks that match all and some filtering tags
+				if (task.tags.length === input.length || task.tags.length < input.length)
+					return task.tags.every((tag: string) => input.indexOf(tag) >= 0);
+				//if more filters than task tags match all
+				if (task.tags.length > input.length) return task.tags.some((tag: string) => input.indexOf(tag) >= 0);
+			});
+			if (res) dispatch(taskSearchByTags(res)); //setting search state
+		} else {
+			dispatch(taskSearchByTags(storeTasks));
+		}
 	};
 
 	useEffect(() => {
