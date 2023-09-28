@@ -20,11 +20,9 @@ const searchSlice = createSlice({
 	reducers: {
 		taskSearchByContent(state, action: PayloadAction<TaskProps[]>) {
 			state.searchByContent = action.payload;
-			console.log(state.searchByContent);
 		},
 		taskSearchByTags(state, action: PayloadAction<TaskProps[]>) {
 			state.searchByTags = action.payload;
-			console.log(state.searchByTags);
 		},
 	},
 });

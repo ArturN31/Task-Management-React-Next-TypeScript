@@ -6,7 +6,7 @@ const inputsSlice = createSlice({
 	initialState: {
 		taskContentInput: '',
 		taskTagsInput: [''],
-		taskDateInput: new Date(),
+		taskDateInput: new Date().toString(),
 		searchByContentInput: '',
 		searchByTagsInput: [''],
 	},
@@ -31,8 +31,8 @@ const inputsSlice = createSlice({
 		setTaskTagsToEmpty(state, action: PayloadAction<string[]>) {
 			state.taskTagsInput = action.payload;
 		},
-		setTaskDateInput(state, action: PayloadAction<Date>) {
-			state.taskDateInput = action.payload;
+		setTaskDateInput(state, action: PayloadAction<string>) {
+			state.taskDateInput = action.payload.toString();
 		},
 		setSearchByContentInput(state, action: PayloadAction<string>) {
 			state.searchByContentInput = action.payload;

@@ -10,7 +10,7 @@ import { setTaskDateInput } from '@/lib/store/inputsSlice';
 export default function Datepicker() {
 	const dispatch = useAppDispatch();
 	const storeInputs = useAppSelector((state) => state.inputs);
-	const handleDueDate = (date: Date) => dispatch(setTaskDateInput(date));
+	const handleDueDate = (date: Date) => dispatch(setTaskDateInput(date.toString()));
 
 	let borderColorCustom = { borderColor: '#00000044' };
 
@@ -23,7 +23,7 @@ export default function Datepicker() {
 				<Box className='grid items-center justify-center'>
 					<DatePicker
 						id='datepicker'
-						selected={storeInputs.taskDateInput}
+						selected={new Date(storeInputs.taskDateInput)}
 						placeholderText='Choose date'
 						onChange={(date: Date) => handleDueDate(date)}
 						withPortal

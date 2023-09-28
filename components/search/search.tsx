@@ -41,7 +41,6 @@ export default function Search() {
 	};
 
 	const searchByTaskTags = async (input: string[]) => {
-		console.log(input);
 		//local storage is set
 		if (input[0] !== '') {
 			//if there is search input

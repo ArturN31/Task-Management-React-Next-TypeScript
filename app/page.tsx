@@ -40,7 +40,6 @@ export default function Home() {
 	}, [storeTasks]);
 
 	useEffect(() => {
-		console.log(storeTasksSearch);
 		//if searching by content
 		if (storeTasksSearch.searchByContent.length > 0 && storeTasksSearch.searchByContent[0].id !== '')
 			dispatch(setTasksToDisplay(storeTasksSearch.searchByContent));
@@ -55,14 +54,14 @@ export default function Home() {
 	}, [storeTasksSearch]);
 
 	//adding task
-	const Add = async (input: string, tags: string[], due: Date | undefined, event: Event) => {
+	const Add = async (input: string, tags: string[], due: string | undefined, event: Event) => {
 		event.preventDefault();
 		if (input !== '' && tags[0] !== '') {
 			let task = {
 				id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
 				content: input.charAt(0).toUpperCase() + input.slice(1),
 				isCompleted: false,
-				due: due ? due.toISOString() : undefined,
+				due: due ? due : undefined,
 				tags: tags,
 				isOverdue: false,
 			};
@@ -71,7 +70,7 @@ export default function Home() {
 			//resetting inputs
 			dispatch(setTaskContentInput(''));
 			dispatch(setTaskTagsToEmpty(['']));
-			dispatch(setTaskDateInput(new Date()));
+			dispatch(setTaskDateInput(new Date().toString()));
 		}
 	};
 
