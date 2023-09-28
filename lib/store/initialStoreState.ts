@@ -4,7 +4,7 @@ export const initialState: TaskState = {
 		{
 			id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
 			content: 'Sample task - overdue',
-			due: new Date('2023-09-01').toISOString(),
+			due: new Date('2023-09-01').toString(),
 			tags: ['Important'],
 			isCompleted: false,
 			isOverdue: true,
@@ -12,7 +12,7 @@ export const initialState: TaskState = {
 		{
 			id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
 			content: 'Sample task - in progress',
-			due: new Date('2023-12-01').toISOString(),
+			due: new Date('2023-12-01').toString(),
 			tags: ['Important, Meeting'],
 			isCompleted: false,
 			isOverdue: false,
@@ -20,7 +20,7 @@ export const initialState: TaskState = {
 		{
 			id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
 			content: 'Sample task - completed',
-			due: new Date().toISOString(),
+			due: new Date().toString(),
 			tags: ['Important, Meeting'],
 			isCompleted: true,
 			isOverdue: false,
