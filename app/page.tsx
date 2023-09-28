@@ -25,6 +25,7 @@ import Search from '@/components/search/search';
 // - Implement task editing.
 // - Implement reminders for due dates.
 // - Remove/Archive overdue tasks after a period of time ~ 1 day.
+// - Add notification on form wrong input.
 
 export default function Home() {
 	const storeTasks = useAppSelector((state) => state.tasks.tasks); //redux tasks store
@@ -79,23 +80,10 @@ export default function Home() {
 		tasks.map((task: TaskProps) => {
 			//if task is not overdue and the task is not marked as completed
 			if (task.due && task.isOverdue !== true && task.isCompleted !== true) {
-				//getting utc date to keep timezone when stringifying date
 				let newDate = new Date();
-				let now = JSON.parse(
-					JSON.stringify(
-						new Date(
-							Date.UTC(
-								newDate.getFullYear(),
-								newDate.getMonth(),
-								newDate.getDate(),
-								newDate.getHours(),
-								newDate.getMinutes()
-							)
-						)
-					)
-				);
+
 				//if tasks due date is in the past set task as overdue
-				if (task.due < now) dispatch(overdueTask(task.id));
+				if (new Date(task.due) < newDate) dispatch(overdueTask(task.id));
 			}
 		});
 	};
