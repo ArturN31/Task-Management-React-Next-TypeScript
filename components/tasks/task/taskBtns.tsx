@@ -1,7 +1,5 @@
 'use client';
 
-import { TaskProps } from '@/lib/types';
-
 import {
 	Box,
 	Button,
@@ -18,59 +16,29 @@ import UndoIcon from '@mui/icons-material/Undo';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { removeTask, completedTask } from '@/lib/store/tasksListSlice';
 
 export default function TaskBtns({
 	id,
-	list,
-	setList,
 	isCompleted,
 	isOverdue,
 }: {
 	id: string;
-	list: TaskProps[];
-	setList: Function;
-	content: string;
 	isCompleted: boolean;
-	due: Date | undefined;
-	tags: string[];
 	isOverdue: boolean;
 }) {
 	const [openDialog, setOpenDialog] = useState(false);
+	const dispatch = useAppDispatch();
 
 	//handles removal of a task
 	const Remove = (id: string) => {
-		//returns all tasks beside the one that matches task id
-		//effectively removing it from list state
-		let arr = list.filter((task: TaskProps) => {
-			if (task.id !== id) return task;
-			else return;
-		});
-		setList(arr);
-		localStorage.setItem('tasks', JSON.stringify(arr));
+		dispatch(removeTask(id)); //removing task from redux store
 	};
 
 	//allows to mark task as completed/not completed
 	const MarkAsCompleted = (id: string) => {
-		let arr = list.map((task: TaskProps) => {
-			//if task not completed
-			if (task.isCompleted !== true) {
-				//if task id is the same as clicked task id set completed to true
-				if (task.id === id) {
-					task.isCompleted = true;
-					return task;
-				} else return task; //if not then return task
-			}
-			//if task completed
-			else {
-				//if task data is equal to clicked task data set completed to false
-				if (task.id === id) {
-					task.isCompleted = false;
-					return task;
-				} else return task; //if not then return task
-			}
-		});
-		setList(arr);
-		localStorage.setItem('tasks', JSON.stringify(arr));
+		dispatch(completedTask(id)); //altering task in redux store
 	};
 
 	return (
@@ -133,9 +101,7 @@ export default function TaskBtns({
 				}}
 				aria-labelledby='alert-dialog-title'
 				aria-describedby='alert-dialog-description'>
-				<DialogTitle id='alert-dialog-title'>
-					Do you really want to delete this task?
-				</DialogTitle>
+				<DialogTitle id='alert-dialog-title'>Do you really want to delete this task?</DialogTitle>
 				<DialogActions>
 					<Button
 						onClick={() => {

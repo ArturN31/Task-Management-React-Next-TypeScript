@@ -1,19 +1,9 @@
 'use client';
 
-import { TaskProps } from '@/lib/types';
-
 import ListOutput from './listOutput';
 import { Box } from '@mui/material';
 
-export default function ListOfCompletedTasks({
-	tasks,
-	list,
-	setList,
-}: {
-	tasks: Array<TaskProps>;
-	list: Array<TaskProps>;
-	setList: Function;
-}) {
+export default function ListOfCompletedTasks({ tasks }: { tasks: Array<TaskProps> }) {
 	let arr: any;
 
 	if (tasks !== undefined) {
@@ -37,11 +27,7 @@ export default function ListOfCompletedTasks({
 	return (
 		<Box className='border border-black rounded m-4 mb-0 p-2 pb-4 h-fit shadow-lg bg-slate-900/[0.5]'>
 			<h2 className='mt-4 text-xl text-center text-white'>Completed</h2>
-			<ListOutput
-				tasks={...arr}
-				list={list}
-				setList={setList}
-			/>
+			<ListOutput tasks={...arr} />
 		</Box>
 	);
 }

@@ -8,13 +8,13 @@ export default function TaskContent({
 	tags,
 }: {
 	content: string;
-	due: Date | undefined;
+	due: string | undefined;
 	tags: string[];
 }) {
-	let dateArray: string[] = [];
+	let date: string[] = [];
 	if (due) {
-		dateArray = due?.toString().split('T');
-		dateArray[1] = dateArray[1].split('.')[0];
+		let d = new Date(due);
+		date = d.toString().split('GMT');
 	}
 
 	return (
@@ -31,13 +31,7 @@ export default function TaskContent({
 					<ListItemText
 						className='text-center'
 						primary='Due'
-						secondary={
-							<>
-								<span>{dateArray[0]}</span>
-								<br></br>
-								<span>{dateArray[1]}</span>
-							</>
-						}
+						secondary={<span>{date[0]}</span>}
 					/>
 				</ListItem>
 			) : (

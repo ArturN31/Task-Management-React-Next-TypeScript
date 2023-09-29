@@ -1,15 +1,11 @@
 'use client';
 
-import { TaskProps } from '@/lib/types';
-
 import { Box } from '@mui/material';
 import TaskContent from './taskContent';
 import TaskBtns from './taskBtns';
 
 export default function Task({
 	id,
-	list,
-	setList,
 	content,
 	isCompleted,
 	due,
@@ -17,11 +13,9 @@ export default function Task({
 	isOverdue,
 }: {
 	id: string;
-	list: TaskProps[];
-	setList: Function;
 	content: string;
 	isCompleted: boolean;
-	due: Date | undefined;
+	due: string | undefined;
 	tags: string[];
 	isOverdue: boolean;
 }) {
@@ -42,12 +36,7 @@ export default function Task({
 
 			<TaskBtns
 				id={id}
-				list={list}
-				setList={setList}
-				content={content}
 				isCompleted={isCompleted}
-				due={due}
-				tags={tags}
 				isOverdue={isOverdue}
 			/>
 		</Box>

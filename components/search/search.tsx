@@ -1,101 +1,73 @@
 'use client';
 
-import { TaskProps, isVisibleProps } from '@/lib/types';
-
 import { TextField, IconButton, Tooltip, Box } from '@mui/material';
 import TagsSearch from '../search/tagsSearch';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import ListFilter from './listFilter';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-export default function Search({
-	searchInput,
-	setSearchInput,
-	tagsSearch,
-	setTagsSearch,
-	setList,
-	isVisible,
-	setIsVisible,
-}: {
-	searchInput: string;
-	setSearchInput: Function;
-	tagsSearch: string[];
-	setTagsSearch: Function;
-	setList: Function;
-	isVisible: isVisibleProps;
-	setIsVisible: Function;
-}) {
-	const [isSearchVisible, setIsSearchVisible] = useState<Boolean>(true);
+import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
+import { setSearchByContentInput } from '@/lib/store/inputsSlice';
+import { taskSearchByContent, taskSearchByTags } from '@/lib/store/searchTasksListSlice';
+import { showSearch } from '@/lib/store/componentVisibilitySlice';
+
+export default function Search() {
+	const storeTasks = useAppSelector((state) => state.tasks.tasks); //redux tasks store
+	const storeInputs = useAppSelector((state) => state.inputs); //redux inputs store
+	const storeComponentVisibility = useAppSelector((state) => state.visibility); //redux component visibility store
+
+	const dispatch = useAppDispatch();
 
 	//handles search input
 	const handleSearchInput = (event: Event) => {
 		let e = event?.target as HTMLInputElement;
-		if (e) setSearchInput(e.value);
-	};
-
-	//retrieves tasks from local storage
-	const getTasksFromLocalStorage = () => {
-		let lsTasks: TaskProps[];
-		if (localStorage.tasks) {
-			lsTasks = JSON.parse(localStorage.tasks);
-			return lsTasks;
-		}
+		if (e) dispatch(setSearchByContentInput(e.value));
 	};
 
 	const searchByTaskContent = async (input: string) => {
-		let ls = getTasksFromLocalStorage();
-		if (ls) {
-			//local storage is set
-			if (input !== '') {
-				//if there is search input
-				//filters the list with tasks and returns array with tasks that contain input
-				let res: TaskProps[] = ls.filter((task: TaskProps) =>
-					task.content.toLowerCase().includes(input.toLowerCase())
-				);
-				if (res) setList(res);
-			} else setList(ls); //if no search input return list of tasks
+		if (input !== '') {
+			//if there is search input
+			//filters the list with tasks and returns array with tasks that contain input
+			let res: TaskProps[] = storeTasks.filter((task: TaskProps) =>
+				task.content.toLowerCase().includes(input.toLowerCase())
+			);
+			if (res) {
+				dispatch(taskSearchByContent(res)); //setting search state
+			}
 		} else {
-			//local storage is not set
+			dispatch(taskSearchByContent(storeTasks));
 		}
 	};
 
 	const searchByTaskTags = async (input: string[]) => {
-		let ls = getTasksFromLocalStorage();
-		if (ls) {
-			//local storage is set
-			if (input.length > 0) {
-				//if there is search input
-				let res: TaskProps[] = ls.filter((task: TaskProps) => {
-					//returns tasks that match all and some filtering tags
-					if (
-						task.tags.length === input.length ||
-						task.tags.length < input.length
-					)
-						return task.tags.every((tag: string) => input.indexOf(tag) >= 0);
-
-					//if more filters than task tags match all
-					if (task.tags.length > input.length)
-						return task.tags.some((tag: string) => input.indexOf(tag) >= 0);
-				});
-				if (res) setList(res);
-			} else setList(ls); //if no search input return list of tasks
+		//local storage is set
+		if (input[0] !== '') {
+			//if there is search input
+			let res: TaskProps[] = storeTasks.filter((task: TaskProps) => {
+				//returns tasks that match all and some filtering tags
+				if (task.tags.length === input.length || task.tags.length < input.length)
+					return task.tags.every((tag: string) => input.indexOf(tag) >= 0);
+				//if more filters than task tags match all
+				if (task.tags.length > input.length) return task.tags.some((tag: string) => input.indexOf(tag) >= 0);
+			});
+			if (res) dispatch(taskSearchByTags(res)); //setting search state
 		} else {
-			//local storage is not set
+			dispatch(taskSearchByTags(storeTasks));
 		}
 	};
 
 	useEffect(() => {
-		searchByTaskContent(searchInput);
+		searchByTaskContent(storeInputs.searchByContentInput);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [searchInput]);
+	}, [storeInputs.searchByContentInput]);
 
 	useEffect(() => {
-		searchByTaskTags(tagsSearch);
+		searchByTaskTags(storeInputs.searchByTagsInput);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [tagsSearch]);
+	}, [storeInputs.searchByTagsInput]);
 
-	return isSearchVisible === true ? (
+	return storeComponentVisibility.search === true ? (
 		<>
 			<p className='pb-2 text-white'>Filter tasks</p>
 			<TextField
@@ -103,22 +75,15 @@ export default function Search({
 				label='Search for a task'
 				variant='filled'
 				className='grid self-center bg-white shadow-inner'
-				value={searchInput}
+				value={storeInputs.searchByContentInput}
 				onChange={(e: any) => {
 					handleSearchInput(e);
 				}}
 			/>
 
 			<Box className='grid grid-cols-1 2xl:grid-cols-2'>
-				<TagsSearch
-					tagsSearch={tagsSearch}
-					setTagsSearch={setTagsSearch}
-				/>
-
-				<ListFilter
-					isVisible={isVisible}
-					setIsVisible={setIsVisible}
-				/>
+				<TagsSearch />
+				<ListFilter />
 			</Box>
 
 			<Tooltip
@@ -131,7 +96,7 @@ export default function Search({
 				<IconButton
 					className='grid grid-cols-1 mx-auto'
 					onClick={() => {
-						setIsSearchVisible(false);
+						dispatch(showSearch(false));
 					}}>
 					<KeyboardArrowUpIcon />
 				</IconButton>
@@ -148,7 +113,7 @@ export default function Search({
 			<IconButton
 				className='grid grid-cols-1 mx-auto hover:bg-amber-500'
 				onClick={() => {
-					setIsSearchVisible(true);
+					dispatch(showSearch(true));
 				}}>
 				<KeyboardArrowDownIcon />
 			</IconButton>
