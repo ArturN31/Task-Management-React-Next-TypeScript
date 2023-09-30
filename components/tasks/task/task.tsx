@@ -4,6 +4,8 @@ import { Box } from '@mui/material';
 import TaskContent from './taskContent';
 import TaskBtns from './taskBtns';
 
+import TaskReminder from './taskReminder';
+
 export default function Task({
 	id,
 	content,
@@ -11,13 +13,15 @@ export default function Task({
 	due,
 	tags,
 	isOverdue,
+	reminder,
 }: {
 	id: string;
 	content: string;
 	isCompleted: boolean;
-	due: string | undefined;
+	due: string;
 	tags: string[];
 	isOverdue: boolean;
+	reminder: boolean;
 }) {
 	return (
 		<Box
@@ -27,6 +31,12 @@ export default function Task({
 				borderRight: '1px solid #00000044',
 				borderTop: '1ps solid #00000044',
 			}}>
+			<TaskReminder
+				due={due}
+				isOverdue={isOverdue}
+				reminder={reminder}
+			/>
+
 			<TaskContent
 				key={content}
 				content={content}

@@ -10,43 +10,63 @@ const componentVisibilitySlice = createSlice({
 		form: true,
 		search: true,
 		removeDialog: false,
+		submitPopover: null,
 	},
 	reducers: {
+		//inProgress list
 		showInProgress(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.inProgress = action.payload;
 		},
 		hideInProgress(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.inProgress = action.payload;
 		},
+
+		//completed list
 		showCompleted(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.completed = action.payload;
 		},
 		hideCompleted(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.completed = action.payload;
 		},
+
+		//overdue list
 		showOverdue(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.overdue = action.payload;
 		},
 		hideOverdue(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.overdue = action.payload;
 		},
+
+		//form
 		showForm(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.form = action.payload;
 		},
 		hideForm(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.form = action.payload;
 		},
+
+		//search
 		showSearch(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.search = action.payload;
 		},
 		hideSearch(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.search = action.payload;
 		},
+
+		//remove dialog
 		showRemoveDialog(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.removeDialog = action.payload;
 		},
 		hideRemoveDialog(state: ComponentsVisibility, action: PayloadAction<boolean>) {
 			state.removeDialog = action.payload;
+		},
+
+		//form submit popover
+		showSubmitPopover(state: ComponentsVisibility, action: PayloadAction<EventTarget>) {
+			state.submitPopover = action.payload;
+		},
+		hideSubmitPopover(state: ComponentsVisibility) {
+			state.submitPopover = null;
 		},
 	},
 });
@@ -65,6 +85,8 @@ export const {
 	hideSearch,
 	showRemoveDialog,
 	hideRemoveDialog,
+	showSubmitPopover,
+	hideSubmitPopover,
 } = componentVisibilitySlice.actions;
 export default componentVisibilitySlice.reducer;
 

@@ -14,6 +14,7 @@ const taskListSlice = createSlice({
 				tags: action.payload.tags,
 				isCompleted: action.payload.isCompleted,
 				isOverdue: action.payload.isOverdue,
+				reminder: false,
 			});
 		},
 		removeTask(state: TaskState, action: PayloadAction<string>) {
@@ -33,11 +34,17 @@ const taskListSlice = createSlice({
 			});
 			if (obj) obj[0].isOverdue = true;
 		},
+		setTaskReminder(state: TaskState, action: PayloadAction<TaskProps>) {
+			let obj = state.tasks.filter((item: TaskProps) => {
+				return item.id === action.payload.id;
+			});
+			if (obj) obj[0].reminder = true;
+		},
 	},
 });
 
 //exporting reducers - to be used with dispatch hook
-export const { addTask, removeTask, completedTask, overdueTask } = taskListSlice.actions;
+export const { addTask, removeTask, completedTask, overdueTask, setTaskReminder } = taskListSlice.actions;
 export default taskListSlice.reducer;
 
 //exporting redux store state

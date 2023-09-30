@@ -1,16 +1,17 @@
 interface TaskProps {
 	id: string;
 	content: string;
-	due: string | undefined;
+	due: string;
 	tags: string[];
 	isCompleted: boolean;
 	isOverdue: boolean;
+	reminder: boolean;
 }
 
 interface InputProps {
 	taskInput: string;
 	tagsInput: string[];
-	dateInput: string | undefined;
+	dateInput: string;
 	searchByContentInput: string;
 	searchByTagsInput: string[];
 }
@@ -27,6 +28,12 @@ interface ComponentsVisibility {
 	form: boolean;
 	search: boolean;
 	removeDialog: boolean;
+	submitPopover: EventTarget | null;
+}
+
+interface ReminderProps {
+	task: string;
+	countdown: number;
 }
 
 type TaskState = {

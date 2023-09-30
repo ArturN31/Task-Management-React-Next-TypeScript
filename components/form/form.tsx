@@ -3,15 +3,14 @@
 import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
 import { addTask } from '@/lib/store/tasksListSlice';
 import { setTaskContentInput, setTaskTagsToEmpty, setTaskDateInput } from '@/lib/store/inputsSlice';
-import { showForm } from '@/lib/store/componentVisibilitySlice';
+import { showForm, showSubmitPopover } from '@/lib/store/componentVisibilitySlice';
 
 import { Box, TextField, IconButton, Tooltip } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import Tags from '@/components/form/tags';
 import Datepicker from '@/components/form/datepicker';
+import FormBtns from './formBtns';
 import Search from '@/components/search/search';
 
 export default function Form() {
@@ -20,9 +19,9 @@ export default function Form() {
 	const dispatch = useAppDispatch();
 
 	//adding task
-	const Add = async (input: string, tags: string[], due: string | undefined, event: Event) => {
+	const Add = async (input: string, tags: string[], due: string, event: Event) => {
 		event.preventDefault();
-		if (input !== '' && tags[0] !== '') {
+		if (input !== '' && tags[0] !== '' && due !== '') {
 			let task = {
 				id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
 				content: input.charAt(0).toUpperCase() + input.slice(1),
@@ -37,6 +36,8 @@ export default function Form() {
 			dispatch(setTaskContentInput(''));
 			dispatch(setTaskTagsToEmpty(['']));
 			dispatch(setTaskDateInput(new Date().toString()));
+		} else {
+			if (event.currentTarget) dispatch(showSubmitPopover(event.currentTarget));
 		}
 	};
 
@@ -74,35 +75,7 @@ export default function Form() {
 
 							<Datepicker />
 						</Box>
-						<Box className='grid'>
-							<Box className='flex justify-center gap-4'>
-								<Tooltip
-									title='Hide form'
-									className='p-2 mt-3 text-black bg-white shadow-md w-fit h-fit hover:bg-amber-500'
-									sx={{
-										border: '1px solid',
-										borderColor: '#00000044',
-									}}>
-									<IconButton
-										onClick={() => {
-											dispatch(showForm(false));
-										}}>
-										<KeyboardArrowUpIcon />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title='Add task'>
-									<IconButton
-										type='submit'
-										className='p-2 mt-3 text-black bg-white shadow-md w-fit h-fit hover:bg-green-500'
-										sx={{
-											border: '1px solid',
-											borderColor: '#00000044',
-										}}>
-										<AddIcon />
-									</IconButton>
-								</Tooltip>
-							</Box>
-						</Box>
+						<FormBtns />
 					</Box>
 				) : (
 					<Box className='flex justify-center'>

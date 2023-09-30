@@ -3,10 +3,11 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 let taskprops: TaskProps = {
 	id: '',
 	content: '',
-	due: undefined,
+	due: '',
 	tags: [''],
 	isCompleted: false,
 	isOverdue: false,
+	reminder: false,
 };
 let initialState: SearchProps = {
 	searchByContent: [taskprops],
