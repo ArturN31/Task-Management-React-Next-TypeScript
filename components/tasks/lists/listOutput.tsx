@@ -17,6 +17,7 @@ export default function ListOutput({ tasks }: { tasks: Array<TaskProps> }) {
 						due={tasks[item].due}
 						tags={tasks[item].tags}
 						isOverdue={tasks[item].isOverdue}
+						reminder={tasks[item].reminder}
 					/>
 				))
 			) : Object.keys(tasks).length === 1 ? (
@@ -28,6 +29,7 @@ export default function ListOutput({ tasks }: { tasks: Array<TaskProps> }) {
 					due={tasks[0].due}
 					tags={tasks[0].tags}
 					isOverdue={tasks[0].isOverdue}
+					reminder={tasks[0].reminder}
 				/>
 			) : (
 				''
