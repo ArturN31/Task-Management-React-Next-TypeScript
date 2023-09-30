@@ -9,7 +9,6 @@ export const initialState: TaskState = {
 			isCompleted: false,
 			isOverdue: true,
 			reminder: false,
-			countdown: 0,
 		},
 		{
 			id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
@@ -19,7 +18,6 @@ export const initialState: TaskState = {
 			isCompleted: false,
 			isOverdue: false,
 			reminder: false,
-			countdown: 0,
 		},
 		{
 			id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
@@ -29,7 +27,6 @@ export const initialState: TaskState = {
 			isCompleted: true,
 			isOverdue: false,
 			reminder: false,
-			countdown: 0,
 		},
 		{
 			id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
@@ -39,7 +36,6 @@ export const initialState: TaskState = {
 			isCompleted: false,
 			isOverdue: false,
 			reminder: false,
-			countdown: 0,
 		},
 		{
 			id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
@@ -49,7 +45,6 @@ export const initialState: TaskState = {
 			isCompleted: false,
 			isOverdue: false,
 			reminder: false,
-			countdown: 0,
 		},
 		{
 			id: 'id_' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
@@ -59,7 +54,6 @@ export const initialState: TaskState = {
 			isCompleted: false,
 			isOverdue: false,
 			reminder: false,
-			countdown: 0,
 		},
 	],
 };
